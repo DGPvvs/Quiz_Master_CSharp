@@ -2,16 +2,16 @@
 {
 	public interface IGame
 	{
-		public void Init();
+		void Init();
 
-		public void Run();
+		void Run();
 
-		public void Exit();
+		void Exit();
 
-		public uint GetMaxQuizId();
+		uint MaxUserId { get; set; }
 
-		public void SetMaxQuizId(uint quizId);
+		uint MaxQuizId { get; set; }
 
-		public void SaveConfig();
+		void SaveConfig();
 	}
 }

@@ -2,46 +2,43 @@
 {
 	using Common.BaseProvider.Contract;
 	using Common.Classes;
+	using Common.Enums;
 	using Common.IO.Contract;
-	using System.Numerics;
 
 	public interface IUser
 	{
-        public string Name { get; }
+		string Name { get; }
 
-        public string FirstName { set; }
+		string FirstName { set; }
 
-        public string LastName { set; }
+		string LastName { set; }
 
-        public string UserName { get; set; }
+		string UserName { get; set; }
 
-        public uint Id { get; set; }
+		uint Id { get; set; }
 
-        public string FileName { get; set; }
+		string FileName { get; set; }
 
-        public void Login();
+		IWriter Writer { get; }
 
-        public void Logout();
+		IReader Reader { get; }
 
-        public void Action(CommandStruct cmdStr);
+		IBaseProvider Provider { get; }
 
-        public IWriter Writer { get; }
+		bool IsHasLog { get; }
 
-        public IReader Reader { get; }
+		string BuildUserData();
 
-        public IBaseProvider Provider { get; }
+		void Help();
 
-        
-    virtual void Print() = 0;
-    virtual bool GetIsHasLog() = 0;
-    virtual String BuildUserData() = 0;
-    virtual void Help() = 0;
-    virtual unsigned int Hash(const String&) = 0;
-			virtual void SetIsHasLog(bool) = 0;
-    virtual int FindUserData(UserStruct&, bool) = 0;
-    virtual void AllUsers(String&) = 0;
-    virtual void SetUpUserData(UserStruct&, Vector<String>&, UserOptions) = 0;
-    virtual void SaveData() = 0;
-};
-	}
+		uint Hash(string str);
+
+		int FindUserData(UserStruct us, bool exsist);
+
+		string AllUsers();
+
+		void SetUpUserData(UserStruct us, List<string> list, UserOptions uo);
+
+		void SaveData();
+	};
 }
