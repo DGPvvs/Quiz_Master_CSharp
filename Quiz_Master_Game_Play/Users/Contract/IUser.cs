@@ -29,8 +29,6 @@
 
 		string BuildUserData();
 
-		void Help();
-
 		uint Hash(string str);
 
 		int FindUserData(UserStruct us, bool exsist);
@@ -40,5 +38,5 @@
 		void SetUpUserData(UserStruct us, List<string> list, UserOptions uo);
 
 		void SaveData();
-	};
+	}
 }

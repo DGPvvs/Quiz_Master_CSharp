@@ -4,6 +4,8 @@
 	using Common.Classes;
 	using Common.Enums;
 	using Common.IO.Contract;
+	using Quiz_Master_Game_Play.MessageClass;
+	using Quiz_Master_Game_Play.QuizClass;
 	using Quiz_Master_Game_Play.Users.Contract;
 	using System.Collections.Generic;
 	using System.Numerics;
@@ -23,7 +25,7 @@
 		private Quiz quiz;
 		private Message message;
 
-		User(IWriter writer, IReader reader, IBaseProvider provider)
+		public User(IWriter writer, IReader reader, IBaseProvider provider)
 		{
 			this.writer = writer;
 			this.reader = reader;
@@ -61,60 +63,186 @@
 			set => this.firstName = value;
 		}
 
-		public string LastName { set => throw new NotImplementedException(); }
-		public string UserName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public uint Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public string FileName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-		
-
-		
-
-		
-
-		
-
-		int FindUserIndex(UserStruct& us, Vector<String>& usersVec);
-		bool GenerateReason(CommandStruct&);
-		Quiz& GetQuiz();
-		Message& GetMessage();
-
-		public:
-    virtual void setLastName(const String) override;
-
-    virtual String getUserName() const override;
-    virtual void setUserName(const String) override;
-
-    virtual void setId(const unsigned int) override;
-    virtual unsigned int getId() const override;
-
-    virtual String getFileName() const override;
-    virtual void setFileName(const String) override;
-
-    virtual void Login() override;
-    virtual void Logout() override;
-    virtual void Action(CommandStruct&) override;
-
-    
-    virtual unsigned int Hash(const String& str) override;
-    virtual int FindUserData(UserStruct&, bool) override;
-    virtual void AllUsers(String&) override;
-    virtual void SetUpUserData(UserStruct&, Vector<String>&, UserOptions) override;
-
-    virtual void Print() override;
-    virtual String BuildUserData() override;
-    virtual void Help() override;
-    virtual void SaveData() string IUser.BuildUserData()
+		public string LastName
 		{
-			throw new NotImplementedException();
+			set => this.lastName = value;
 		}
 
-		void IUser.Help()
+		public string UserName
 		{
-			throw new NotImplementedException();
+			get => this.userName;
+			set => this.userName = value;
 		}
+
+		public uint Id
+		{
+			get => this.id;
+			set => this.id = value;
+		}
+
+		public string FileName
+		{
+			get => this.fileName;
+			set => this.fileName = value;
+		}
+
+		protected int FindUserIndex(UserStruct us, List<string> usersVec)
+		{
+			int result = -1;
+			int i = 0;
+
+			bool isLoopExit = false;
+			bool isFound = false;
+
+			bool notEmptyVector = usersVec.getSize() > 0;
+
+			while (notEmptyVector && !(isLoopExit || isFound))
+			{
+				string user = usersVec[i];
+
+				List<string> v = user.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+				if (us.userName == v[0])
+				{
+					isFound = true;
+					result = i;
+				}
+
+				i++;
+
+				if (i >= usersVec.getSize())
+				{
+					isLoopExit = true;
+				}
+			}
+
+			return result;
+		}
+
+		protected bool GenerateReason(CommandStruct cmdStr)
+		{
+			List<string> v = cmdStr.CommandLine.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			List<string> v1 = new List<string>();
+
+			if (v.Count > 1)
+			{
+				for (int i = 2; i < v.Count; i++)
+				{
+					v1.Add(v[i]);
+				}
+
+				cmdStr.Param2 = string.Join(ELEMENT_DATA_SEPARATOR, v1);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		protected Quiz GetQuiz => this.quiz;
+
+		protected Message GetMessage => this.message;
 
 		public uint Hash(string str)
+		{
+			uint hash = 1315423911;
+
+			foreach (char ch in str)
+			{
+				hash ^= ((hash << 5) + ch + (hash >> 2));
+			}
+
+			return (hash & 0x7FFFFFFF);
+		}
+
+		public int FindUserData(UserStruct us, bool exsist)
+		{
+			Vector<String> usersVec, v;
+			String users;
+			this->AllUsers(users);
+			String::Split(ROW_DATA_SEPARATOR, usersVec, users);
+
+			int userIndex = this->FindUserIndex(us, usersVec);
+
+			if (userIndex > -1)
+			{
+				String user = usersVec[userIndex];
+				String::Split(ELEMENT_DATA_SEPARATOR, v, user);
+				if (exsist && this->Hash(us.password) != v[1].StringToInt())
+				{
+					return UserOptions::WrongPassword;
+				}
+				else if (exsist && (v[4].StringToInt() & UserOptions::Ban) == UserOptions::Ban)
+				{
+					return UserOptions::Ban;
+				}
+
+				us.fileName = v[2];
+				us.id = v[3].StringToInt();
+				us.firstName = v[0];
+				us.password = v[1];
+
+				return (UserOptions::Empty | UserOptions::OK | UserOptions::AlreadyExisist);
+			}
+
+			return UserOptions::NotFound;
+
+		}
+
+		public string AllUsers(string users) => this.provider->Action(users, ProviderOptions::UserFind);
+
+		public void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
+		{
+			if ((uo & UserOptions::NewUserCreated) == UserOptions::NewUserCreated)
+			{
+				this->firstName = us.firstName;
+				this->lastName = us.lastName;
+			}
+			else
+			{
+				String s = us.fileName;
+				this->provider->Action(s, ProviderOptions::UserLoad);
+
+				String::Split(ROW_DATA_SEPARATOR, v, s);
+
+				this->firstName = v[0];
+				this->lastName = v[1];
+				this->SetIsHasLog(true);
+			}
+
+			this->fileName = us.fileName;
+			this->id = us.id;
+			this->userName = us.userName;
+			this->password = us.password.StringToInt();
+		}
+
+		public string BuildUserData()
+		{
+			String result = EMPTY_STRING;
+
+			char* arr = new char[2] { '\0' };
+			arr[0] = FILENAME_TO_DATA_SEPARATOR;
+
+			result += this->fileName + String(arr);
+
+			arr[0] = ROW_DATA_SEPARATOR;
+			String newLine = String(arr);
+
+			result += this->firstName + newLine;
+			result += this->lastName + newLine;
+
+
+			return result;
+		}
+
+		public void SaveData()
+		{
+			return;
+		}
+
+
+		string IUser.BuildUserData()
 		{
 			throw new NotImplementedException();
 		}
@@ -129,18 +257,9 @@
 			throw new NotImplementedException();
 		}
 
-		public void SetUpUserData(UserStruct us, List<string> list, UserOptions uo)
-		{
-			throw new NotImplementedException();
-		}
-
 		void IUser.SaveData()
 		{
 			throw new NotImplementedException();
 		}
-
-		override;
-
-    virtual ~User();
-	};
+	}
 }

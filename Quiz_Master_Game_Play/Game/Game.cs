@@ -2,11 +2,16 @@
 {
 	using Common.BaseProvider.Contract;
 	using Common.Classes;
+	using Common.Enums;
 	using Common.IO.Contract;
 	using Quiz_Master_Game_Play.Commands.Contract;
 	using Quiz_Master_Game_Play.Game.Contract;
+	using Quiz_Master_Game_Play.Users;
 	using Quiz_Master_Game_Play.Users.Contract;
 	using System;
+	using System.Collections.Generic;
+
+	using static Common.Constants.GlobalConstants;
 
 	public class Game : IGame
 	{
@@ -65,5 +70,16 @@
 			throw new NotImplementedException();
 		}
 
+		public void LoadConfig()
+		{
+			string configString = string.Empty;
+
+			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
+
+			List<string> v = configString.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			this.maxUserId = uint.Parse(v[0]);
+			this.maxQuizId = uint.Parse(v[1]);
+		}
 	}
 }
