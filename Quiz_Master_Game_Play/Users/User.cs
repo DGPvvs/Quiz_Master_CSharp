@@ -2,23 +2,23 @@
 {
 	using Common.BaseProvider.Contract;
 	using Common.Classes;
+	using Common.Constants;
 	using Common.Enums;
 	using Common.IO.Contract;
 	using Quiz_Master_Game_Play.MessageClass;
 	using Quiz_Master_Game_Play.QuizClass;
 	using Quiz_Master_Game_Play.Users.Contract;
 	using System.Collections.Generic;
-	using System.Numerics;
 
 	using static Common.Constants.GlobalConstants;
 
 	class User : IUser
 	{
 		private uint id;
-		private string firstName;
-		private string lastName;
-		private string userName;
-		private string fileName;
+		private string? firstName;
+		private string? lastName;
+		private string? userName;
+		private string? fileName;
 		private uint password;
 		private bool isHasLogin;
 		private IWriter writer;
@@ -58,19 +58,19 @@
 
 		public IBaseProvider Provider => this.provider;
 
-		public string Name => $"{this.firstName} {this.lastName}";
+		public string? Name => $"{this.firstName} {this.lastName}";
 
-		public string FirstName
+		public string? FirstName
 		{
 			set => this.firstName = value;
 		}
 
-		public string LastName
+		public string? LastName
 		{
 			set => this.lastName = value;
 		}
 
-		public string UserName
+		public string? UserName
 		{
 			get => this.userName;
 			set => this.userName = value;
@@ -82,7 +82,7 @@
 			set => this.id = value;
 		}
 
-		public string FileName
+		public string? FileName
 		{
 			get => this.fileName;
 			set => this.fileName = value;
@@ -123,7 +123,7 @@
 
 		protected bool GenerateReason(CommandStruct cmdStr)
 		{
-			List<string> v = cmdStr.CommandLine.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> v = cmdStr.CommandLine!.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			List<string> v1 = new List<string>();
 
@@ -159,113 +159,75 @@
 		}
 
 		public UserOptions FindUserData(UserStruct us, bool exsist)
-		{			
+		{
 			string users = string.Empty;
 
 			users = this.AllUsers(users);
 
-			List<string> usersVec = users.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> usersVec = users.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			int userIndex = this.FindUserIndex(us, usersVec);
 
 			if (userIndex > -1)
 			{
-				List<string> v = usersVec[userIndex].Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> v = usersVec[userIndex].Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				if (exsist && this.Hash(us.Password) != uint.Parse(v[1]))
 				{
 					return UserOptions.WrongPassword;
 				}
-				else if (exsist && (v[4].StringToInt() & UserOptions::Ban) == UserOptions::Ban)
+				else if (exsist && ((UserOptions)Enum.Parse(typeof(UserOptions), v[4]) & UserOptions.Ban) == UserOptions.Ban)
 				{
-					return UserOptions::Ban;
+					return UserOptions.Ban;
 				}
 
-				us.fileName = v[2];
-				us.id = v[3].StringToInt();
-				us.firstName = v[0];
-				us.password = v[1];
+				us.FileName = v[2];
+				us.Id = uint.Parse(v[3]);
+				us.FirstName = v[0];
+				us.Password = v[1];
 
-				return (UserOptions::Empty | UserOptions::OK | UserOptions::AlreadyExisist);
+				return (UserOptions.Empty | UserOptions.OK | UserOptions.AlreadyExisist);
 			}
 
-			return UserOptions::NotFound;
-
+			return UserOptions.NotFound;
 		}
 
 		public string AllUsers(string users)
 		{
 			this.provider.Action(ref users, ProviderOptions.UserFind);
+			return users;
 		}
 
 		public void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
 		{
-			if ((uo & UserOptions::NewUserCreated) == UserOptions::NewUserCreated)
+			if ((uo & UserOptions.NewUserCreated) == UserOptions.NewUserCreated)
 			{
-				this->firstName = us.firstName;
-				this->lastName = us.lastName;
+				this.FirstName = us.FirstName!;
+				this.LastName = us.LastName!;
 			}
 			else
 			{
-				String s = us.fileName;
-				this->provider->Action(s, ProviderOptions::UserLoad);
+				string s = us.FileName!;
+				this.provider.Action(ref s, ProviderOptions.UserLoad);
 
-				String::Split(ROW_DATA_SEPARATOR, v, s);
+				v = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				this->firstName = v[0];
-				this->lastName = v[1];
-				this->SetIsHasLog(true);
+				this.FirstName = v[0];
+				this.LastName = v[1];
+				this.IsHasLog = true;
 			}
 
-			this->fileName = us.fileName;
-			this->id = us.id;
-			this->userName = us.userName;
-			this->password = us.password.StringToInt();
+			this.FileName = us.FileName!;
+			this.Id = us.Id;
+			this.UserName = us.UserName!;
+			this.Password = uint.Parse(us.Password!);
 		}
 
-		public string BuildUserData()
-		{
-			String result = EMPTY_STRING;
-
-			char* arr = new char[2] { '\0' };
-			arr[0] = FILENAME_TO_DATA_SEPARATOR;
-
-			result += this->fileName + String(arr);
-
-			arr[0] = ROW_DATA_SEPARATOR;
-			String newLine = String(arr);
-
-			result += this->firstName + newLine;
-			result += this->lastName + newLine;
-
-
-			return result;
-		}
+		public string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{GlobalConstants.ROW_DATA_SEPARATOR}{this.lastName}{GlobalConstants.ROW_DATA_SEPARATOR}";
 
 		public void SaveData()
 		{
 			return;
-		}
-
-
-		string IUser.BuildUserData()
-		{
-			throw new NotImplementedException();
-		}
-
-		int IUser.FindUserData(UserStruct us, bool exsist)
-		{
-			throw new NotImplementedException();
-		}
-
-		public string AllUsers()
-		{
-			throw new NotImplementedException();
-		}
-
-		void IUser.SaveData()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

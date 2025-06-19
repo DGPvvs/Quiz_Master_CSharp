@@ -31,5 +31,7 @@
 		public const bool NOT_LOGIN = false;
 		public const bool TEST_MODE = true;
 		public const bool NORMAL_MODE = false;
+
+		public const string EXIT = "exit";
 	}
 }

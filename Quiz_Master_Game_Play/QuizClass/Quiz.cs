@@ -9,6 +9,7 @@
 	using Common.Enums;
 
 	using static Common.Constants.GlobalConstants;
+	using Common.Constants;
 
 	class Quiz
 	{
@@ -142,101 +143,93 @@
 			}
 			else if (qs == QuizStatus.LikeQuiz)
 			{
-				Vector<String> resultVec;
+				List<string> resultVec = new List<string>();
 
-				List<string> quizzesVec = s.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> quizzesVec = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				for (int i = 0; i < quizzesVec.Count; i++)
 				{
 					string quizString = quizzesVec[i];
 
-					QuizIndexDTO qiDTO;
+					QuizIndexDTO qiDTO = new QuizIndexDTO();
 
 					qiDTO.SetElement(quizString);
 
-					if (qiDTO.id == quizId)
+					if (qiDTO.Id == quizId)
 					{
-						qiDTO.likes++;
-						String incLikeString = qiDTO.ToIndexString();
-						resultVec.push_back(incLikeString);
+						qiDTO.Likes++;
+						string incLikeString = qiDTO.ToIndexString();
+						resultVec.Add(incLikeString);
 					}
 					else
 					{
-						resultVec.push_back(quizString);
+						resultVec.Add(quizString);
 					}
 				}
 
-				String allQuizzesString;
-				String::Join(ROW_DATA_SEPARATOR, resultVec, allQuizzesString);
+				string allQuizzesString = string.Join(GlobalConstants.ROW_DATA_SEPARATOR, resultVec);
 
-				allQuizzesString = QUIZZES_FILE_NAME + FILENAME_SEPARATOR + allQuizzesString;
+				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 
-				this->provider->Action(allQuizzesString, ProviderOptions::QuizzeIndexSave);
+				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
 			}
-			else if (qs == QuizStatus::UnlikeQuiz)
+			else if (qs == QuizStatus.UnlikeQuiz)
 			{
-				Vector<String> quizzesVec, resultVec;
+				List<string> quizzesVec = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				String::Split(ROW_DATA_SEPARATOR, quizzesVec, s);
+				List<string> resultVec = new List<string>();
 
-				for (size_t i = 0; i < quizzesVec.getSize(); i++)
+				for (int i = 0; i < quizzesVec.Count; i++)
 				{
-					String quizString = quizzesVec[i];
+					string quizString = quizzesVec[i];
 
-					QuizIndexDTO qiDTO;
+					QuizIndexDTO qiDTO = new QuizIndexDTO();
 
 					qiDTO.SetElement(quizString);
 
-					if (qiDTO.id == quizId)
+					if (qiDTO.Id == quizId)
 					{
-						qiDTO.likes--;
-						String incLikeString = qiDTO.ToIndexString();
-						resultVec.push_back(incLikeString);
+						qiDTO.Likes--;
+						string incLikeString = qiDTO.ToIndexString();
+						resultVec.Add(incLikeString);
 					}
 					else
 					{
-						resultVec.push_back(quizString);
+						resultVec.Add(quizString);
 					}
 				}
 
-				String allQuizzesString;
-				String::Join(ROW_DATA_SEPARATOR, resultVec, allQuizzesString);
+				string allQuizzesString = string.Join(GlobalConstants.ROW_DATA_SEPARATOR, resultVec);
 
-				allQuizzesString = QUIZZES_FILE_NAME + FILENAME_SEPARATOR + allQuizzesString;
+				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 
-				this->provider->Action(allQuizzesString, ProviderOptions::QuizzeIndexSave);
+				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
 			}
 
-			if (qs == QuizStatus::NewQuiz)
+			if (qs == QuizStatus.NewQuiz)
 			{
-				char* arr1 = new char[2] { '\0' };
-				arr1[0] = FILENAME_TO_DATA_SEPARATOR;
+				string allQuizData = $"{quizFileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.QuizName}{Environment.NewLine}{this.NumberOfQuestions}{Environment.NewLine}{this.UserName}{Environment.NewLine}";
 
-				String allQuizData = quizFileName + String(arr1) + this->GetQuizName() + NEW_LINE + String::UIntToString(this->GetNumberOfQuestions());
-				allQuizData += NEW_LINE + this->GetUserName() + NEW_LINE;
-
-				for (size_t i = 0; i < this->GetNumberOfQuestions(); i++)
+				for (int i = 0; i < this.NumberOfQuestions; i++)
 				{
-					allQuizData += this->GetQuestions()[i]->BuildQuestionData();
+					allQuizData += this.Questions[i].BuildQuestionData();
 				}
 
-				this->provider->Action(allQuizData, ProviderOptions::QuizzeSave);
+				this.provider.Action(ref allQuizData, ProviderOptions.QuizSave);
 
-				arr1[0] = QUOTES_DATA_SEPARATOR;
-				this->writer->WriteLine("Quiz " + String(arr1) + this->GetQuizName() + String(arr1) + " with ID " + String::UIntToString(this->GetId()) + " sent for admin approval!");
-
+				this.writer.WriteLine($"Quiz {GlobalConstants.QUOTES_DATA_SEPARATOR}{this.QuizName}{GlobalConstants.QUOTES_DATA_SEPARATOR} with ID {this.Id} sent for admin approval!");
 			}
 		}
 
 		public string FindAllQuizzes()
 		{
-			String s = QUIZZES_FILE_NAME;
+			string s = GlobalConstants.QUIZZES_FILE_NAME;
 
-			this->provider->Action(s, ProviderOptions::QuizzeFind);
+			this.provider.Action(ref s, ProviderOptions.QuizFind);
 
-			if (s == ERROR)
+			if (s == GlobalConstants.ERROR)
 			{
-				s = EMPTY_STRING;
+				s = string.Empty;
 			}
 
 			return s;

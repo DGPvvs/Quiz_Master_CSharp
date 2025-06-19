@@ -7,17 +7,17 @@
 
 	public interface IUser
 	{
-		string Name { get; }
+		string? Name { get; }
 
-		string FirstName { set; }
+		string? FirstName { set; }
 
-		string LastName { set; }
+		string? LastName { set; }
 
-		string UserName { get; set; }
+		string? UserName { get; set; }
 
 		uint Id { get; set; }
 
-		string FileName { get; set; }
+		string? FileName { get; set; }
 
 		IWriter Writer { get; }
 
@@ -31,9 +31,9 @@
 
 		uint Hash(string str);
 
-		int FindUserData(UserStruct us, bool exsist);
+		UserOptions FindUserData(UserStruct us, bool exsist);
 
-		string AllUsers();
+		string AllUsers(string users);
 
 		void SetUpUserData(UserStruct us, List<string> list, UserOptions uo);
 
