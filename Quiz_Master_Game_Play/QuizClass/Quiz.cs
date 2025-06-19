@@ -142,13 +142,13 @@
 			}
 			else if (qs == QuizStatus.LikeQuiz)
 			{
-				Vector<String> quizzesVec, resultVec;
+				Vector<String> resultVec;
 
-				String::Split(ROW_DATA_SEPARATOR, quizzesVec, s);
+				List<string> quizzesVec = s.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				for (size_t i = 0; i < quizzesVec.getSize(); i++)
+				for (int i = 0; i < quizzesVec.Count; i++)
 				{
-					String quizString = quizzesVec[i];
+					string quizString = quizzesVec[i];
 
 					QuizIndexDTO qiDTO;
 

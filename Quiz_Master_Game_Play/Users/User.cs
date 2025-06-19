@@ -10,6 +10,8 @@
 	using System.Collections.Generic;
 	using System.Numerics;
 
+	using static Common.Constants.GlobalConstants;
+
 	class User : IUser
 	{
 		private uint id;
@@ -94,7 +96,7 @@
 			bool isLoopExit = false;
 			bool isFound = false;
 
-			bool notEmptyVector = usersVec.getSize() > 0;
+			bool notEmptyVector = usersVec.Count > 0;
 
 			while (notEmptyVector && !(isLoopExit || isFound))
 			{
@@ -102,7 +104,7 @@
 
 				List<string> v = user.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				if (us.userName == v[0])
+				if (us.UserName == v[0])
 				{
 					isFound = true;
 					result = i;
@@ -110,7 +112,7 @@
 
 				i++;
 
-				if (i >= usersVec.getSize())
+				if (i >= usersVec.Count)
 				{
 					isLoopExit = true;
 				}
@@ -156,22 +158,23 @@
 			return (hash & 0x7FFFFFFF);
 		}
 
-		public int FindUserData(UserStruct us, bool exsist)
-		{
-			Vector<String> usersVec, v;
-			String users;
-			this->AllUsers(users);
-			String::Split(ROW_DATA_SEPARATOR, usersVec, users);
+		public UserOptions FindUserData(UserStruct us, bool exsist)
+		{			
+			string users = string.Empty;
 
-			int userIndex = this->FindUserIndex(us, usersVec);
+			users = this.AllUsers(users);
+
+			List<string> usersVec = users.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			int userIndex = this.FindUserIndex(us, usersVec);
 
 			if (userIndex > -1)
 			{
-				String user = usersVec[userIndex];
-				String::Split(ELEMENT_DATA_SEPARATOR, v, user);
-				if (exsist && this->Hash(us.password) != v[1].StringToInt())
+				List<string> v = usersVec[userIndex].Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+				if (exsist && this.Hash(us.Password) != uint.Parse(v[1]))
 				{
-					return UserOptions::WrongPassword;
+					return UserOptions.WrongPassword;
 				}
 				else if (exsist && (v[4].StringToInt() & UserOptions::Ban) == UserOptions::Ban)
 				{
@@ -190,7 +193,10 @@
 
 		}
 
-		public string AllUsers(string users) => this.provider->Action(users, ProviderOptions::UserFind);
+		public string AllUsers(string users)
+		{
+			this.provider.Action(ref users, ProviderOptions.UserFind);
+		}
 
 		public void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
 		{
