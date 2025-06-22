@@ -12,21 +12,19 @@
 	using System;
 	using System.Collections.Generic;
 
-	using static Common.Constants.GlobalConstants;
-
 	public class Game : IGame
 	{
-		private IUser? user;
+		private IUser user;
 		private IReader reader;
 		private IWriter writer;
 		private IBaseProvider provider;
-		private readonly List<ICommand> commands;
-		private CommandStruct? cmd;
+		private List<ICommand> commands;
+		private CommandStruct cmd;
 
 		private uint maxUserId;
 		private uint maxQuizId;
 
-		Game(IWriter writer, IReader reader, IBaseProvider provider, List<ICommand> commands)
+		public Game(IWriter writer, IReader reader, IBaseProvider provider, List<ICommand> commands)
 		{
 			this.writer = writer;
 			this.reader = reader;
@@ -51,9 +49,9 @@
 
 		public IUser User
 		{
-			get => this.user!;
+			get => this.user;
 			set => this.user = value;
-		}		
+		}
 
 		public IWriter Writer => this.writer;
 
@@ -63,11 +61,11 @@
 
 		public List<ICommand> Commands => this.commands;
 
-		public CommandStruct Cmd => this.cmd!;
+		public CommandStruct Cmd => this.cmd;
 
 		public void Exit()
 		{
-			if (this.user!.IsHasLog)
+			if (this.user.IsHasLog)
 			{
 				//this->LogoutUser();
 			}
@@ -93,10 +91,27 @@
 			this.provider.Action(ref configString, ProviderOptions.ConfigSave);
 		}
 
+		public void LoadUser(UserStruct us)
+		{
+			if (us.Id <= 10)
+			{
+				this.User = new Admin(this.Writer, this.Reader, this.Provider);
+			}
+			else
+			{
+				this.User = new Player(this.Writer, this.Reader, this.Provider, this);
+			}
+
+			List<string> v = new List<string>();
+
+			this.User.SetUpUserData(us, v, UserOptions.Empty);
+		}
+
 		private void LoadConfig()
 		{
 			string configString = string.Empty;
 			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
+
 
 			List<string> v = configString.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -120,7 +135,7 @@
 					}
 				}
 
-				if (this.Cmd.Command == EXIT)
+				if (this.Cmd.Command == GlobalConstants.EXIT)
 				{
 					isLoopExit = true;
 				}
@@ -131,10 +146,10 @@
 		{
 			this.Cmd.Command = string.Empty;
 
-			this.Writer.Write(PROMPT_STRING);
+			this.Writer.Write(GlobalConstants.PROMPT_STRING);
 
 			string s = this.Reader.ReadLine();
-			List<string> commandLine = s.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> commandLine = s.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			this.Cmd.CommandLine = s;
 			this.Cmd.ParamRange = (uint)commandLine.Count;
@@ -155,5 +170,6 @@
 				this.Cmd.Param5 = commandLine[5];
 			}
 		}
+
 	}
 }

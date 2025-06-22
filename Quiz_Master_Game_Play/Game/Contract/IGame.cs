@@ -31,5 +31,7 @@
 		uint MaxQuizId { get; set; }
 
 		void SaveConfig();
+
+		void LoadUser(UserStruct us);
 	}
 }

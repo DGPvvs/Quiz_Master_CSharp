@@ -1,10 +1,37 @@
 ﻿namespace Quiz_Master_File_DB
 {
+	using Common.Constants;
+	using Quiz_Master_Game_Play.Game.Contract;
+	using Quiz_Master_Game_Play.Game;
+	using Quiz_Master_File_DB.IO;
+	using Quiz_Master_File_DB.BaseProvider;
+	using Quiz_Master_Game_Play.Commands.Contract;
+	using Quiz_Master_Game_Play.Commands;
+
 	public class QuizMasterFileDB
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Hello, World!");
+			ConsoleWriter writer = new ConsoleWriter();
+			ConsoleReader reader = new ConsoleReader();
+			FileBaseProvider provider = new FileBaseProvider();
+
+			List<ICommand> commands = new List<ICommand>()
+			{
+				new LogoutUserCommand(GlobalConstants.LOGOUT)
+			};
+
+			IGame game = new Game(writer, reader, provider, commands);
+
+			try
+			{
+				game.Init();
+				game.Run();
+			}
+			catch (Exception ex)
+			{
+				writer.WriteLine("ERROREXT");
+			}
 		}
 	}
 }

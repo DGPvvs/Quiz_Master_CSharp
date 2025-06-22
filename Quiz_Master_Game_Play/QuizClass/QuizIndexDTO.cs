@@ -15,7 +15,7 @@
 
         public string? QuizFileName { get; set; }
 
-        public uint QuizStatus { get; set; }
+        public QuizStatus QuizStatus { get; set; }
 
         public uint NumOfQuestions { get; set; }
 
@@ -29,7 +29,7 @@
 			this.QuizName = quizVec[1];
 			this.UserName = quizVec[2];
 			this.QuizFileName = quizVec[3];
-			this.QuizStatus = uint.Parse(quizVec[4]);
+			this.QuizStatus = (QuizStatus)Enum.Parse(typeof(QuizStatus), quizVec[4]);
 			this.NumOfQuestions = uint.Parse(quizVec[5]);
 			this.Likes = uint.Parse(quizVec[6]);
 		}

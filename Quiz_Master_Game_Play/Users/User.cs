@@ -12,13 +12,13 @@
 
 	using static Common.Constants.GlobalConstants;
 
-	class User : IUser
+	public class User : IUser
 	{
 		private uint id;
-		private string? firstName;
-		private string? lastName;
-		private string? userName;
-		private string? fileName;
+		private string firstName;
+		private string lastName;
+		private string userName;
+		private string fileName;
 		private uint password;
 		private bool isHasLogin;
 		private IWriter writer;
@@ -58,19 +58,19 @@
 
 		public IBaseProvider Provider => this.provider;
 
-		public string? Name => $"{this.firstName} {this.lastName}";
+		public string Name => $"{this.firstName} {this.lastName}";
 
-		public string? FirstName
+		public string FirstName
 		{
 			set => this.firstName = value;
 		}
 
-		public string? LastName
+		public string LastName
 		{
 			set => this.lastName = value;
 		}
 
-		public string? UserName
+		public string UserName
 		{
 			get => this.userName;
 			set => this.userName = value;
@@ -82,7 +82,7 @@
 			set => this.id = value;
 		}
 
-		public string? FileName
+		public string FileName
 		{
 			get => this.fileName;
 			set => this.fileName = value;
@@ -102,7 +102,7 @@
 			{
 				string user = usersVec[i];
 
-				List<string> v = user.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> v = user.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				if (us.UserName == v[0])
 				{
@@ -123,7 +123,7 @@
 
 		protected bool GenerateReason(CommandStruct cmdStr)
 		{
-			List<string> v = cmdStr.CommandLine!.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> v = cmdStr.CommandLine.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			List<string> v1 = new List<string>();
 
@@ -134,7 +134,7 @@
 					v1.Add(v[i]);
 				}
 
-				cmdStr.Param2 = string.Join(ELEMENT_DATA_SEPARATOR, v1);
+				cmdStr.Param2 = string.Join(GlobalConstants.ELEMENT_DATA_SEPARATOR, v1);
 
 				return true;
 			}
@@ -190,6 +190,7 @@
 			}
 
 			return UserOptions.NotFound;
+
 		}
 
 		public string AllUsers(string users)
@@ -198,16 +199,16 @@
 			return users;
 		}
 
-		public void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
+		public virtual void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
 		{
 			if ((uo & UserOptions.NewUserCreated) == UserOptions.NewUserCreated)
 			{
-				this.FirstName = us.FirstName!;
-				this.LastName = us.LastName!;
+				this.FirstName = us.FirstName;
+				this.LastName = us.LastName;
 			}
 			else
 			{
-				string s = us.FileName!;
+				string s = us.FileName;
 				this.provider.Action(ref s, ProviderOptions.UserLoad);
 
 				v = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -217,17 +218,25 @@
 				this.IsHasLog = true;
 			}
 
-			this.FileName = us.FileName!;
+			this.FileName = us.FileName;
 			this.Id = us.Id;
-			this.UserName = us.UserName!;
-			this.Password = uint.Parse(us.Password!);
+			this.UserName = us.UserName;
+			this.Password = uint.Parse(us.Password);
 		}
 
-		public string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{GlobalConstants.ROW_DATA_SEPARATOR}{this.lastName}{GlobalConstants.ROW_DATA_SEPARATOR}";
+		public virtual string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{GlobalConstants.ROW_DATA_SEPARATOR}{this.lastName}{GlobalConstants.ROW_DATA_SEPARATOR}";
 
-		public void SaveData()
+		public virtual void SaveData()
 		{
 			return;
+		}
+
+		public virtual void Help()
+		{
+			foreach (var command in GlobalConstants.listUserCommands)
+			{
+				this.Writer.WriteLine(command);
+			}
 		}
 	}
 }

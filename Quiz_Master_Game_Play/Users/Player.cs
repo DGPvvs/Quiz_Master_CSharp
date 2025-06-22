@@ -1,0 +1,688 @@
+﻿namespace Quiz_Master_Game_Play.Users
+{
+	using Common.BaseProvider.Contract;
+	using Common.Classes;
+	using Common.Constants;
+	using Common.Enums;
+	using Common.IO.Contract;
+	using Quiz_Master_Game_Play.Game.Contract;
+	using Quiz_Master_Game_Play.Questions.Contract;
+	using Quiz_Master_Game_Play.QuizClass;
+	using static System.Runtime.InteropServices.JavaScript.JSType;
+	using System.Numerics;
+	using System.Text;
+
+	using static Common.Constants.GlobalConstants;
+	using Quiz_Master_Game_Play.Questions;
+
+	public class Player : User
+	{
+		private uint level;
+		private uint points;
+		private uint numberCreatedQuizzes;
+		private uint numberLikedQuizzes;
+		private uint numberFavoriteQuizzes;
+		private uint numberFinishedChallenges;
+		private uint numberSolvedTestQuizzes;
+		private uint numberSolvedNormalQuizzes;
+		private uint numberCreatedQuizzesChallengers;
+
+		private IGame game;
+
+		private List<string> listCreatedQuizzes;
+		private List<uint> listLikedQuizzes;
+		private List<uint> listFavoriteQuizzes;
+		private List<string> listFinishedChallenges;
+
+		public Player(IWriter writer, IReader reader, IBaseProvider provider, UserStruct us, UserOptions uo)
+			: base(writer, reader, provider)
+		{
+			this.game = null;
+			this.Init();
+
+			List<string> v = new List<string>();
+
+			this.SetUpUserData(us, v, uo);
+			this.SaveData();
+		}
+
+		public Player(IWriter writer, IReader reader, IBaseProvider provider, IGame game)
+			: base(writer, reader, provider)
+		{
+			this.game = game;
+			this.Init();
+		}
+
+		private void Init()
+		{
+			this.listCreatedQuizzes = new List<string>();
+			this.listLikedQuizzes = new List<uint>();
+			this.listFavoriteQuizzes = new List<uint>();
+			this.listFinishedChallenges = new List<string>(); ;
+		}
+
+		public uint PointsForLevel()
+		{
+			List<uint> levelKeys = GlobalConstants.listPointForLevel
+				.Keys
+				.Take(GlobalConstants.listPointForLevel.Count - 1)
+				.OrderBy(k => k)
+				.ToList();
+
+			foreach (var key in levelKeys)
+			{
+				if (this.level < key)
+				{
+					return GlobalConstants.listPointForLevel[key];
+				}
+			}
+
+			return GlobalConstants.listPointForLevel
+				.Values
+				.Last();
+		}
+
+		public override void SaveData()
+		{
+			string s = this.BuildUserData();
+			this.Provider.Action(ref s, ProviderOptions.UserSave);
+		}
+
+		public override string BuildUserData()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append(base.BuildUserData());
+
+			this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes.Count;
+			this.numberLikedQuizzes = (uint)this.listLikedQuizzes.Count;
+			this.numberFavoriteQuizzes = (uint)this.listFavoriteQuizzes.Count;
+			this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
+
+			sb.AppendLine(this.level.ToString());
+			sb.AppendLine(this.points.ToString());
+			sb.AppendLine(this.numberCreatedQuizzes.ToString());
+			sb.AppendLine(this.numberLikedQuizzes.ToString());
+			sb.AppendLine(this.numberFavoriteQuizzes.ToString());
+			sb.AppendLine(this.numberFinishedChallenges.ToString());
+			sb.AppendLine(this.numberSolvedTestQuizzes.ToString());
+			sb.AppendLine(this.numberSolvedNormalQuizzes.ToString());
+			sb.AppendLine(this.numberCreatedQuizzesChallengers.ToString());
+
+			for (int i = 0; i < this.listCreatedQuizzes.Count; i++)
+			{
+				sb.AppendLine(this.listCreatedQuizzes[i]);
+			}
+
+			for (int i = 0; i < this.listLikedQuizzes.Count; i++)
+			{
+				sb.AppendLine(this.listLikedQuizzes[i].ToString());
+			}
+
+			for (int i = 0; i < this.listFavoriteQuizzes.Count; i++)
+			{
+				sb.AppendLine(this.listFavoriteQuizzes[i].ToString());
+			}
+
+			for (int i = 0; i < this.listFinishedChallenges.Count; i++)
+			{
+				sb.AppendLine(this.listFinishedChallenges[i]);
+			}
+
+			return sb.ToString();
+		}
+
+		public override void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
+		{
+			base.SetUpUserData(us, v, uo);
+
+			if (uo.HasFlag(UserOptions.NewUserCreated))
+			{
+				this.level = 0;
+				this.points = 0;
+				this.numberCreatedQuizzes = 0;
+				this.numberLikedQuizzes = 0;
+				this.numberFavoriteQuizzes = 0;
+				this.numberFinishedChallenges = 0;
+				this.numberSolvedTestQuizzes = 0;
+				this.numberSolvedNormalQuizzes = 0;
+				this.numberCreatedQuizzesChallengers = 0;
+				return;
+			}
+
+			this.level = uint.Parse(v[2]);
+			this.points = uint.Parse(v[3]);
+			this.numberCreatedQuizzes = uint.Parse(v[4]);
+			this.numberLikedQuizzes = uint.Parse(v[5]);
+			this.numberFavoriteQuizzes = uint.Parse(v[6]);
+			this.numberFinishedChallenges = uint.Parse(v[7]);
+			this.numberSolvedTestQuizzes = uint.Parse(v[8]);
+			this.numberSolvedNormalQuizzes = uint.Parse(v[9]);
+			this.numberCreatedQuizzesChallengers = uint.Parse(v[10]);
+
+			int i = 11;
+			int j = i;
+
+			for (; i < j + this.numberCreatedQuizzes; ++i)
+			{
+				this.listCreatedQuizzes.Add(v[i]);
+			}
+
+			j = i;
+
+			for (; i < j + this.numberLikedQuizzes; ++i)
+			{
+				this.listLikedQuizzes.Add(uint.Parse(v[i]));
+			}
+
+			j = i;
+
+			for (; i < j + this.numberFavoriteQuizzes; ++i)
+			{
+				this.listFavoriteQuizzes.Add(uint.Parse(v[i]));
+			}
+
+			j = i;
+
+			for (; i < j + this.numberFinishedChallenges; ++i)
+			{
+				this.listFinishedChallenges.Add(v[i]);
+			}
+
+			List<string> quizzesVec =  this.GetQuiz
+				.FindAllQuizzes()
+				.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.ToList();
+
+			for (int k = 0; k < quizzesVec.Count; k++)
+			{
+				QuizIndexDTO qiDTO = new QuizIndexDTO();
+
+				qiDTO.SetElement(quizzesVec[k]);
+
+				bool isAddedNewQuiz = !this.ContainCreatedQuizzes(qiDTO.Id)
+					&& (qiDTO.QuizStatus == QuizStatus.ApprovedQuiz)
+					&& (qiDTO.UserName == this.UserName);
+
+				if (isAddedNewQuiz)
+				{
+					string createdQuiz = $"{qiDTO.Id.ToString()}{CREATED_QUIZ_SEPARATOR_STRING}{qiDTO.QuizName}";
+
+					this.listCreatedQuizzes.Add(createdQuiz);
+					this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes.Count;
+
+					this.AddQuizChallenge(ChallengerOptions.CreateChallenger);
+				}
+			}
+
+			/*0 <firstName>
+			1 <lastName>
+			2 <level>
+			3 <points>
+			4 <numberCreatedQuizzes>
+			5 <numberLikedQuizzes>
+			6 <numberFavoriteQuizzes>
+			7 <numberFinishedChallenges>
+			8 <numberSolvedTestQuizzes>
+			9 <numberSolvedNormalQuizzes>
+		   10 <numberCreatedQuizzesChallengers>
+		   <numberCreatedQuizzes lines of created quizes in format>:
+		   <quizId>#<quizName>
+		   .
+		   .
+		   .
+		   <numberLikedQuizzes lines of liked quizzes in format>:
+		   <quizId>
+		   .
+		   .
+		   .
+		   <numberFavoriteQuizzes lines of favorite quizzes in format>:
+		   <quizId>
+		   .
+		   .
+		   .
+		   <numberFinishedChallenges lines of finished challenges in format>
+		   <<data>|<text challenges>>
+		   .
+		   .
+		   .*/
+
+		}
+
+		public void AddQuizChallenge(ChallengerOptions co)
+		{
+			uint point = 0;
+
+			if (co == ChallengerOptions.CreateChallenger)
+			{
+				int createdQuizCount = this.listCreatedQuizzes.Count;
+
+				bool isChalleeng = (createdQuizCount < 31) && (createdQuizCount % 5 == 0);
+
+				if (isChalleeng)
+				{
+					point = (uint)createdQuizCount * 10 / 2;
+
+					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR}New challenge complited! You create { createdQuizCount} quizzes! {point} points added.";
+
+					this.GetMessage.SendMessage(message);
+
+					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {createdQuizCount} create quizzes";
+
+					this.listFinishedChallenges.Add(finishedChaleng);
+					this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
+					this.numberCreatedQuizzesChallengers++;
+				}
+			}
+			else if (co == ChallengerOptions.NormalQuizChallenger)
+			{
+				int normalQuizCount = (int)this.numberSolvedNormalQuizzes;
+
+				bool isChalleeng = (normalQuizCount < 101) && (normalQuizCount % 10 == 0);
+
+				if (isChalleeng)
+				{
+					point = (uint)normalQuizCount * 10 / 3;
+
+					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR} New challenge complited! You solved {normalQuizCount} quizzes in normal mode! {point} points added.";
+
+					this.GetMessage.SendMessage(message);
+
+					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Complete {normalQuizCount} quizzes in normal mode";
+
+					this.listFinishedChallenges.Add(finishedChaleng);
+					this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
+				}
+			}
+			else if (co == ChallengerOptions.TestQuizChallenger)
+			{
+				int testQuizCount = (int)this.numberSolvedTestQuizzes;
+
+				bool isChalleeng = (testQuizCount < 101) && (testQuizCount % 10 == 0);
+
+				if (isChalleeng)
+				{
+					point = (uint)testQuizCount * 10 / 3;
+
+					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR}New challenge complited! You solved {testQuizCount} quizzes in test mode! {point} points added.";
+
+					this.GetMessage.SendMessage(message);
+
+					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {testQuizCount} quizzes in test mode";
+
+					this.listFinishedChallenges.Add(finishedChaleng);
+				}
+			}
+
+			this.AddPoints(point);
+		}
+
+		public void AddPoints(uint point)
+		{
+			this.points += point;
+
+			this.AddLevel();
+		}
+
+		public void AddLevel()
+		{
+			uint pointForLevel = this.PointsForLevel();
+
+			if (pointForLevel - this.points <= 0)
+			{
+				this.level++;
+				this.points -= pointForLevel;
+
+				string message = $"Level {this.level} reached!";
+
+				this.GetMessage.SendMessage(message);
+			}
+		}
+
+
+		public Quiz LoadQuiz(string idString, bool isTest)
+		{
+			uint id = uint.Parse(idString);
+			string quizString = ERROR;
+			Quiz quiz = null;			
+
+			List<string> quizzesVec = this
+				.GetQuiz
+				.FindAllQuizzes()
+				.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.ToList();
+
+			for (int i = 0; i < quizzesVec.Count; i++)
+			{
+				QuizIndexDTO qiDTO = new QuizIndexDTO();
+				string quizElement = quizzesVec[i];
+				qiDTO.SetElement(quizElement);
+
+				if (id == qiDTO.Id && qiDTO.QuizStatus == QuizStatus.ApprovedQuiz)
+				{
+					quizString = qiDTO.QuizFileName;
+					this.Provider.Action(ref quizString, ProviderOptions.QuizLoad);
+					break;
+				}
+			}
+
+			if (quizString != ERROR)
+			{
+				List<string> quizVec = quizString
+					.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+					.ToList();
+
+				quiz = this.LoadQuizHeader(quizVec);
+				quiz.Id = id;
+				uint indexRow = 3;
+
+				for (int i = 0; i < quiz.NumberOfQuestions; i++)
+				{
+					IQuestion? question = null;
+
+					uint questionType = uint.Parse(quizVec[(int)indexRow]);
+					indexRow++;
+
+					if (questionType == (uint)QuestionType.TF)
+					{
+						question = this.LoadTF(quizVec, indexRow, isTest);
+					}
+					else if (questionType == (uint)QuestionType.ShA)
+					{
+						question = this.LoadShA(quizVec, indexRow, isTest);
+					}
+					else if (questionType == (uint)QuestionType.SC)
+					{
+						question = this.LoadSC(quizVec, indexRow, isTest);
+					}
+					else if (questionType == (uint)QuestionType.MP)
+					{
+						question = this.LoadMP(quizVec, indexRow, isTest);
+					}
+					else if (questionType == (uint)QuestionType.MC)
+					{
+						question = this.LoadMC(quizVec, indexRow, isTest);
+					}
+
+					quiz.Questions.Add(question!);
+				}
+			}
+
+			return quiz!;
+		}
+
+		public Quiz LoadQuizHeader(List<string> v)
+		{
+			uint numberOfQuestions = uint.Parse(v[1]);
+			string quizName = v[0];
+			string userName = v[2];
+
+			Quiz quiz = new Quiz(this.Writer, this.Reader, this.Provider, quizName, userName, 0, numberOfQuestions, 0);
+
+			return quiz;
+		}
+
+		public IQuestion LoadTF(List<string> quizVec, uint indexRow, bool isTest)
+		{
+			string description = quizVec[(int)indexRow];
+			indexRow++;
+
+			string answer = quizVec[(int)indexRow];
+			indexRow++;
+
+			uint points = uint.Parse(quizVec[(int)indexRow]);
+			indexRow++;
+
+			TrueOrFalseQuestion question = new TrueOrFalseQuestion(this.Writer, this.Reader, description, answer, points, isTest);
+
+			return question;
+		}
+
+		public IQuestion LoadMP(List<string> quizVec, uint indexRow, bool isTest)
+		{
+			string description = quizVec[(int)indexRow];
+			indexRow++;
+
+			string answer = quizVec[(int)indexRow];
+			indexRow++;
+
+			uint points = uint.Parse(quizVec[(int)indexRow]);
+			indexRow++;
+
+			byte numOfAnswers = byte.Parse(quizVec[(int)indexRow]);
+			indexRow++;
+
+			MatchingPairsQuestion question = new MatchingPairsQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest, numOfAnswers);
+
+			for (size_t i = 0; i < numOfAnswers; i++)
+			{
+				question->GetQuestions().push_back(quizVec[indexRow]);
+				indexRow++;
+			}
+
+			ubyte numOfAnswers1 = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			for (size_t j = 0; j < numOfAnswers1; j++)
+			{
+				question->GetAnswersVec().push_back(quizVec[indexRow]);
+				indexRow++;
+			}
+
+			return question;
+		}
+
+		public IQuestion LoadShA(List<string> quizVec, uint indexRow, bool isTest)
+		{
+			String description = quizVec[indexRow];
+			indexRow++;
+
+			String answer = quizVec[indexRow];
+			indexRow++;
+
+			uint points = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			ShortAnswerQuestion* question = new ShortAnswerQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest);
+
+			return question;
+		}
+
+		public IQuestion LoadMC(List<string> quizVec, uint indexRow, bool isTest)
+		{
+			String description = quizVec[indexRow];
+			indexRow++;
+
+			String answer = quizVec[indexRow];
+			indexRow++;
+
+			uint points = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			ubyte numOfAnswers = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			MultipleChoiceQuestion* question = new MultipleChoiceQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest, numOfAnswers);
+
+			for (size_t i = 0; i < numOfAnswers; i++)
+			{
+				question->GetQuestions().push_back(quizVec[indexRow]);
+				indexRow++;
+			}
+
+			return question;
+		}
+
+		public IQuestion LoadSC(List<string> quizVec, uint indexRow, bool isTest)
+		{
+			String description = quizVec[indexRow];
+			indexRow++;
+
+			String answer = quizVec[indexRow];
+			indexRow++;
+
+			uint points = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			ubyte numOfAnswers = quizVec[indexRow].StringToInt();
+			indexRow++;
+
+			SingleChoiceQuestion* question = new SingleChoiceQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest);
+
+			for (size_t i = 0; i < numOfAnswers; i++)
+			{
+				question->GetQuestions().push_back(quizVec[indexRow]);
+				indexRow++;
+			}
+
+			return question;
+		}
+
+		//void StartQuiz(String&, String&, String&);
+		//void SaveQuiz(String&, String&);
+		//uint* GetOrder(bool, unsigned int);
+
+		//TrueOrFalseQuestion* CreateTF(String*);
+		//SingleChoiceQuestion* CreateSC(String*);
+		//MultipleChoiceQuestion* CreateMC(String*);
+		//ShortAnswerQuestion* CreateShA(String*);
+		//MatchingPairsQuestion* CreateMP(String*);
+
+		public override void Help()
+		{
+			base.Help();
+
+			foreach (var command in GlobalConstants.listPlayerCommands)
+			{
+				this.Writer.WriteLine(command);
+			}		
+		}
+
+		//void ViewSelfProfile(DatBuild);
+		//void ViewOtherProfile(const String&, DatBuild);
+		//public void CreateQuiz()
+		//{
+		//	this->Writer().Write("Enter quiz title: ");
+		//	String* quizName = this->Reader().ReadLine();
+
+		//	this->Writer().Write("Enter number of questions: ");
+		//	String* numOfQuestionsString = this->Reader().ReadLine();
+		//	uint numOfQuestions = numOfQuestionsString->StringToInt();
+
+		//	delete numOfQuestionsString;
+		//	numOfQuestionsString = nullptr;
+
+		//	uint quizId = this->game->GetMaxQuizId() + 1;
+		//	this->game->SetMaxQuizId(quizId);
+
+		//	Quiz* quiz = new Quiz(&this->Writer(), &this->Reader(), &this->Provider(), *quizName, this->getUserName(), quizId, numOfQuestions, 0);
+
+		//	delete quizName;
+		//	quizName = nullptr;
+
+		//	for (size_t i = 0; i < numOfQuestions; i++)
+		//	{
+		//		this->Writer().Write("Enter question " + String::UIntToString(i + 1) + " type(T/F, SC, MC, ShA, MP): ");
+		//		String* questionType = this->Reader().ReadLine();
+
+		//		this->Writer().Write("Enter description: ");
+		//		String* description = this->Reader().ReadLine();
+
+		//		if (*questionType == TF)
+		//		{
+		//			TrueOrFalseQuestion* question = this->CreateTF(description);
+		//			quiz->GetQuestions().push_back(question);
+		//		}
+		//		else if (*questionType == SC)
+		//		{
+		//			SingleChoiceQuestion* question = this->CreateSC(description);
+		//			quiz->GetQuestions().push_back(question);
+		//		}
+		//		else if (*questionType == MC)
+		//		{
+		//			MultipleChoiceQuestion* question = this->CreateMC(description);
+		//			quiz->GetQuestions().push_back(question);
+		//		}
+		//		else if (*questionType == ShA)
+		//		{
+		//			ShortAnswerQuestion* question = this->CreateShA(description);
+		//			quiz->GetQuestions().push_back(question);
+		//		}
+		//		else if (*questionType == MP)
+		//		{
+		//			MatchingPairsQuestion* question = this->CreateMP(description);
+		//			quiz->GetQuestions().push_back(question);
+		//		}
+		//		else
+		//		{
+		//			this->Writer().WriteLine("Incorrect Question Type");
+		//			i--;
+		//		}
+
+		//		delete questionType;
+		//		questionType = nullptr;
+
+		//		delete description;
+		//		description = nullptr;
+		//	}
+
+		//	quiz->SaveQuiz(QuizStatus::NewQuiz, 0);
+		//	this->game->SaveConfig();
+
+		//	//this->numberCreatedQuizzes++;
+
+		//	//String createQuizString = String::UIntToString(quiz->GetId()) + " " + quiz->GetQuizName();
+		//	//this->listCreatedQuizzes.push_back(createQuizString);
+
+		//	//TODO Ïðîâåðêà çà èçïúëíåí ÷àëèíäæ è ñúçäàâàíå íà ñúîáùåíèå çà òîâà
+
+		//	delete quiz;
+		//	quiz = nullptr;
+		//}
+		//void Quizzes(String&);
+		//void ReportQuiz(String&, String&);
+		public bool ContainCreatedQuizzes(uint quizId)
+		{
+			Vector<String> v;
+
+			for (size_t i = 0; i < this->listCreatedQuizzes.getSize(); i++)
+			{
+				v.clear();
+				String::Split(CREATED_QUIZ_SEPARATOR, v, this->listCreatedQuizzes[i]);
+
+				if (v[0].StringToInt() == quizId)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		public bool ContainLikedQuizzes(uint quizId)
+		{
+			Vector<String> v;
+
+			for (size_t i = 0; i < this->listCreatedQuizzes.getSize(); i++)
+			{
+				v.clear();
+				String::Split(CREATED_QUIZ_SEPARATOR, v, this->listCreatedQuizzes[i]);
+
+				if (v[0].StringToInt() == quizId)
+				{
+					return true;
+				}
+			}
+
+			return false;
+
+		}
+		//void Message();
+		//void AddToFavs(String&);
+		//void RemoveFromFavs(String&);
+		//void LikeQuiz(String&);
+		//void UnlikeQuiz(String&);
+		//void PrintFinishedChalleenges();
+		//void PrintChalleenges();
+		//void EditQuiz(String&);
+		//void EditProfile();
+	};
+}

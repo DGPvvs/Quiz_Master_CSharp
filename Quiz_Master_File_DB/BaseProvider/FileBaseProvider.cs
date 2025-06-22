@@ -1,0 +1,68 @@
+﻿namespace Quiz_Master_File_DB.BaseProvider
+{
+	using Common.BaseProvider.Contract;
+	using Common.Constants;
+	using Common.Enums;
+
+	public class FileBaseProvider : IBaseProvider
+	{
+		private void FileSave(string str)
+		{
+			List<string> v = str.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			if (!File.Exists(v[0]))
+			{
+				File.WriteAllText(v[0], v[1]);
+			}
+		}
+
+		private string FileLoad(string str)
+		{
+			if (File.Exists(str))
+			{
+				return File.ReadAllText(str);
+			}
+
+			return string.Empty;
+		}
+
+
+		private void FileDelete(string str, ProviderOptions options)
+		{
+		}
+
+		public void Action(ref string str, ProviderOptions options)
+		{
+			if (options == ProviderOptions.ConfigLoad)
+			{
+				string s = GlobalConstants.CONFIG_FILE_NAME;
+				str = this.FileLoad(s);
+			}
+			else if (options == ProviderOptions.ConfigSave)
+			{
+				string s = $"{GlobalConstants.CONFIG_FILE_NAME}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{str}";
+				this.FileSave(s);
+			}
+			else if (options == ProviderOptions.UserFind)
+			{
+				string s = GlobalConstants.USERS_FILE_NAME;
+				str = this.FileLoad(s);
+			}
+			else if (options == ProviderOptions.NewUserSave || options == ProviderOptions.EditUser)
+			{
+				string s = $"{GlobalConstants.USERS_FILE_NAME}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{str}";
+				this.FileSave(s);
+			}
+			else if ((options == ProviderOptions.UserLoad) || (options == ProviderOptions.QuizFind) || (options == ProviderOptions.MessagesLoad) || (options == ProviderOptions.QuizLoad))
+			{
+				string s = str;
+				str = this.FileLoad(s);
+			}
+			else if ((options == ProviderOptions.UserSave) || (options == ProviderOptions.QuizSave) || (options == ProviderOptions.QuizIndexSave) || (options == ProviderOptions.MessagesSave))
+			{
+				string s = str;
+				this.FileSave(s);
+			}
+		}
+	}
+}

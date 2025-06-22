@@ -11,7 +11,7 @@
 	using static Common.Constants.GlobalConstants;
 	using Common.Constants;
 
-	class Quiz
+	public class Quiz
 	{
 		private uint id;
 		private uint numberOfQuestions;
