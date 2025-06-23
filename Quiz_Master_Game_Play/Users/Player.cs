@@ -451,20 +451,20 @@
 			byte numOfAnswers = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			MatchingPairsQuestion question = new MatchingPairsQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest, numOfAnswers);
+			MatchingPairsQuestion question = new MatchingPairsQuestion(this.Writer, this.Reader, description, answer, points, isTest, numOfAnswers);
 
-			for (size_t i = 0; i < numOfAnswers; i++)
+			for (int i = 0; i < numOfAnswers; i++)
 			{
-				question->GetQuestions().push_back(quizVec[indexRow]);
+				question.Questions.Add(quizVec[(int)indexRow]);
 				indexRow++;
 			}
 
-			ubyte numOfAnswers1 = quizVec[indexRow].StringToInt();
+			byte numOfAnswers1 = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			for (size_t j = 0; j < numOfAnswers1; j++)
+			for (int j = 0; j < numOfAnswers1; j++)
 			{
-				question->GetAnswersVec().push_back(quizVec[indexRow]);
+				question.Questions.Add(quizVec[(int)indexRow]);
 				indexRow++;
 			}
 
@@ -473,39 +473,39 @@
 
 		public IQuestion LoadShA(List<string> quizVec, uint indexRow, bool isTest)
 		{
-			String description = quizVec[indexRow];
+			string description = quizVec[(int)indexRow];
 			indexRow++;
 
-			String answer = quizVec[indexRow];
+			string answer = quizVec[(int)indexRow];
 			indexRow++;
 
-			uint points = quizVec[indexRow].StringToInt();
+			byte points = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			ShortAnswerQuestion* question = new ShortAnswerQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest);
+			ShortAnswerQuestion question = new ShortAnswerQuestion(this.Writer, this.Reader, description, answer, points, isTest);
 
 			return question;
 		}
 
 		public IQuestion LoadMC(List<string> quizVec, uint indexRow, bool isTest)
 		{
-			String description = quizVec[indexRow];
+			string description = quizVec[(int)indexRow];
 			indexRow++;
 
-			String answer = quizVec[indexRow];
+			string answer = quizVec[(int)indexRow];
 			indexRow++;
 
-			uint points = quizVec[indexRow].StringToInt();
+			byte points = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			ubyte numOfAnswers = quizVec[indexRow].StringToInt();
+			byte numOfAnswers = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			MultipleChoiceQuestion* question = new MultipleChoiceQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest, numOfAnswers);
+			MultipleChoiceQuestion question = new MultipleChoiceQuestion(this.Writer, this.Reader, description, answer, points, isTest, numOfAnswers);
 
-			for (size_t i = 0; i < numOfAnswers; i++)
+			for (int i = 0; i < numOfAnswers; i++)
 			{
-				question->GetQuestions().push_back(quizVec[indexRow]);
+				question.Questions.Add(quizVec[(int)indexRow]);
 				indexRow++;
 			}
 
@@ -514,38 +514,28 @@
 
 		public IQuestion LoadSC(List<string> quizVec, uint indexRow, bool isTest)
 		{
-			String description = quizVec[indexRow];
+			string description = quizVec[(int)indexRow];
 			indexRow++;
 
-			String answer = quizVec[indexRow];
+			string answer = quizVec[(int)indexRow];
 			indexRow++;
 
-			uint points = quizVec[indexRow].StringToInt();
+			byte points = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			ubyte numOfAnswers = quizVec[indexRow].StringToInt();
+			byte numOfAnswers = byte.Parse(quizVec[(int)indexRow]);
 			indexRow++;
 
-			SingleChoiceQuestion* question = new SingleChoiceQuestion(&this->Writer(), &this->Reader(), description, answer, points, isTest);
+			SingleChoiceQuestion question = new SingleChoiceQuestion(this.Writer, this.Reader, description, answer, points, isTest);
 
-			for (size_t i = 0; i < numOfAnswers; i++)
+			for (int i = 0; i < numOfAnswers; i++)
 			{
-				question->GetQuestions().push_back(quizVec[indexRow]);
+				question.Questions.Add(quizVec[(int)indexRow]);
 				indexRow++;
 			}
 
 			return question;
 		}
-
-		//void StartQuiz(String&, String&, String&);
-		//void SaveQuiz(String&, String&);
-		//uint* GetOrder(bool, unsigned int);
-
-		//TrueOrFalseQuestion* CreateTF(String*);
-		//SingleChoiceQuestion* CreateSC(String*);
-		//MultipleChoiceQuestion* CreateMC(String*);
-		//ShortAnswerQuestion* CreateShA(String*);
-		//MatchingPairsQuestion* CreateMP(String*);
 
 		public override void Help()
 		{
@@ -554,102 +544,19 @@
 			foreach (var command in GlobalConstants.listPlayerCommands)
 			{
 				this.Writer.WriteLine(command);
-			}		
+			}	
 		}
 
-		//void ViewSelfProfile(DatBuild);
-		//void ViewOtherProfile(const String&, DatBuild);
-		//public void CreateQuiz()
-		//{
-		//	this->Writer().Write("Enter quiz title: ");
-		//	String* quizName = this->Reader().ReadLine();
-
-		//	this->Writer().Write("Enter number of questions: ");
-		//	String* numOfQuestionsString = this->Reader().ReadLine();
-		//	uint numOfQuestions = numOfQuestionsString->StringToInt();
-
-		//	delete numOfQuestionsString;
-		//	numOfQuestionsString = nullptr;
-
-		//	uint quizId = this->game->GetMaxQuizId() + 1;
-		//	this->game->SetMaxQuizId(quizId);
-
-		//	Quiz* quiz = new Quiz(&this->Writer(), &this->Reader(), &this->Provider(), *quizName, this->getUserName(), quizId, numOfQuestions, 0);
-
-		//	delete quizName;
-		//	quizName = nullptr;
-
-		//	for (size_t i = 0; i < numOfQuestions; i++)
-		//	{
-		//		this->Writer().Write("Enter question " + String::UIntToString(i + 1) + " type(T/F, SC, MC, ShA, MP): ");
-		//		String* questionType = this->Reader().ReadLine();
-
-		//		this->Writer().Write("Enter description: ");
-		//		String* description = this->Reader().ReadLine();
-
-		//		if (*questionType == TF)
-		//		{
-		//			TrueOrFalseQuestion* question = this->CreateTF(description);
-		//			quiz->GetQuestions().push_back(question);
-		//		}
-		//		else if (*questionType == SC)
-		//		{
-		//			SingleChoiceQuestion* question = this->CreateSC(description);
-		//			quiz->GetQuestions().push_back(question);
-		//		}
-		//		else if (*questionType == MC)
-		//		{
-		//			MultipleChoiceQuestion* question = this->CreateMC(description);
-		//			quiz->GetQuestions().push_back(question);
-		//		}
-		//		else if (*questionType == ShA)
-		//		{
-		//			ShortAnswerQuestion* question = this->CreateShA(description);
-		//			quiz->GetQuestions().push_back(question);
-		//		}
-		//		else if (*questionType == MP)
-		//		{
-		//			MatchingPairsQuestion* question = this->CreateMP(description);
-		//			quiz->GetQuestions().push_back(question);
-		//		}
-		//		else
-		//		{
-		//			this->Writer().WriteLine("Incorrect Question Type");
-		//			i--;
-		//		}
-
-		//		delete questionType;
-		//		questionType = nullptr;
-
-		//		delete description;
-		//		description = nullptr;
-		//	}
-
-		//	quiz->SaveQuiz(QuizStatus::NewQuiz, 0);
-		//	this->game->SaveConfig();
-
-		//	//this->numberCreatedQuizzes++;
-
-		//	//String createQuizString = String::UIntToString(quiz->GetId()) + " " + quiz->GetQuizName();
-		//	//this->listCreatedQuizzes.push_back(createQuizString);
-
-		//	//TODO Ïðîâåðêà çà èçïúëíåí ÷àëèíäæ è ñúçäàâàíå íà ñúîáùåíèå çà òîâà
-
-		//	delete quiz;
-		//	quiz = nullptr;
-		//}
-		//void Quizzes(String&);
-		//void ReportQuiz(String&, String&);
 		public bool ContainCreatedQuizzes(uint quizId)
 		{
-			Vector<String> v;
-
-			for (size_t i = 0; i < this->listCreatedQuizzes.getSize(); i++)
+			for (int i = 0; i < this.listCreatedQuizzes.Count; i++)
 			{
-				v.clear();
-				String::Split(CREATED_QUIZ_SEPARATOR, v, this->listCreatedQuizzes[i]);
+				List<string> v = this
+					.listCreatedQuizzes[i]
+					.Split(CREATED_QUIZ_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+					.ToList();
 
-				if (v[0].StringToInt() == quizId)
+				if (uint.Parse(v[0]) == quizId)
 				{
 					return true;
 				}
@@ -657,32 +564,23 @@
 
 			return false;
 		}
+
 		public bool ContainLikedQuizzes(uint quizId)
 		{
-			Vector<String> v;
-
-			for (size_t i = 0; i < this->listCreatedQuizzes.getSize(); i++)
+			for (int i = 0; i < this.listCreatedQuizzes.Count; i++)
 			{
-				v.clear();
-				String::Split(CREATED_QUIZ_SEPARATOR, v, this->listCreatedQuizzes[i]);
+				List<string> v = this
+					.listCreatedQuizzes[i]
+					.Split(CREATED_QUIZ_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+					.ToList();
 
-				if (v[0].StringToInt() == quizId)
+				if (uint.Parse(v[0]) == quizId)
 				{
 					return true;
 				}
 			}
 
 			return false;
-
 		}
-		//void Message();
-		//void AddToFavs(String&);
-		//void RemoveFromFavs(String&);
-		//void LikeQuiz(String&);
-		//void UnlikeQuiz(String&);
-		//void PrintFinishedChalleenges();
-		//void PrintChalleenges();
-		//void EditQuiz(String&);
-		//void EditProfile();
-	};
+	}
 }

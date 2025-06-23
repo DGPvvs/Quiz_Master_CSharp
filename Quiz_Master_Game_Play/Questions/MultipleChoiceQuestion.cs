@@ -1,16 +1,17 @@
 ﻿namespace Quiz_Master_Game_Play.Questions
 {
+	using Common.Constants;
 	using Common.Enums;
 	using Common.IO.Contract;
 	using System.Numerics;
 
 	using static Common.Constants.GlobalConstants;
 
-	public  class MultipleChoiceQuestion : SingleChoiceQuestion
+	public class MultipleChoiceQuestion : SingleChoiceQuestion
 	{
 		private byte percent;
 
-		public MultipleChoiceQuestion(IWriter writer, IReader reader, string description, string correctAnswer, uint points, bool isTest, uint questionsCount = 4)
+		public MultipleChoiceQuestion(IWriter writer, IReader reader, string description, string correctAnswer, uint points, bool isTest, byte questionsCount = 4)
 			: base(writer, reader, description, correctAnswer, points, isTest, questionsCount)
 		{
 			this.percent = 0;
@@ -19,13 +20,13 @@
 
 		private void SeparateAnswers(List<string> v, string s)
 		{
-			List<string> tmp1 = s.Split(ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> tmp1 = s.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			v.Clear();
 
 			for (int i = 0; i < tmp1.Count; i++)
 			{
-				List<string> tmp = tmp1[i].Split(COMMA_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> tmp = tmp1[i].Split(GlobalConstants.COMMA_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				for (int j = 0; j < tmp.Count; j++)
 				{
@@ -34,22 +35,23 @@
 			}
 		}
 
-		public override bool AnswerAQuestion()
+		protected override bool AnswerAQuestion()
 		{
 			bool result = false;
 
-			String* answer = this->Reader()->ReadLine();
+			string answer = this.Reader.ReadLine();
 
-			Vector<String> correctAnswersVec, answersVec;
+			List<string> correctAnswersVec = new List<string>();
+			List<string> answersVec = new List<string>();
 
-			this->SeparateAnswers(correctAnswersVec, this->GetCorrectAnswer());
-			this->SeparateAnswers(answersVec, *answer);
+			this.SeparateAnswers(correctAnswersVec, this.CorrectAnswer);
+			this.SeparateAnswers(answersVec, answer);
 
 			uint countCorrectAnswers = 0;
 
-			for (size_t i = 0; i < answersVec.getSize(); i++)
+			for (int i = 0; i < answersVec.Count; i++)
 			{
-				for (size_t j = 0; j < correctAnswersVec.getSize(); j++)
+				for (int j = 0; j < correctAnswersVec.Count; j++)
 				{
 					if (answersVec[i] == correctAnswersVec[j])
 					{
@@ -59,16 +61,13 @@
 				}
 			}
 
-			this->percent = 100.0 * countCorrectAnswers / this->GetNumOfAnswers();
+			this.percent = (byte)(100.0 * countCorrectAnswers / this.NumOfAnswers);
 
-			if (this->percent > 0)
+			if (this.percent > 0)
 			{
 				result = true;
-				this->SetPoints(percent * this->GetPoints() / 100);
+				this.Points = (percent * this.Points / 100);
 			}
-
-			delete answer;
-			answer = nullptr;
 
 			return result;
 		}

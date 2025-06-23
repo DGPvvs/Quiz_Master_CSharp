@@ -1,9 +1,10 @@
 ﻿namespace Quiz_Master_Game_Play.Questions
 {
+	using Common.Constants;
 	using Common.Enums;
 	using Common.IO.Contract;
 	using Quiz_Master_Game_Play.Questions.Contract;
-	using System.Numerics;
+	using System.Text;
 
 	public class SingleChoiceQuestion : Question, IQuestion
 	{
@@ -23,36 +24,96 @@
 
 		public List<string> Questions => this.questions;
 
-		virtual unsigned int Action() override;
-    virtual void SetUpData(String&) override;
-    virtual String BuildQuestionData() override;
-    virtual void PrintQuestion() override;
-    virtual bool AnswerAQuestion() override;
-    virtual String ToStringFile() uint IQuestion.Action()
+		public uint Action()
 		{
-			throw new NotImplementedException();
+			uint result = this.Points;
+
+			this.PrintQuestion();
+
+			if (!this.AnswerAQuestion())
+			{
+				result = 0;
+			}
+
+			this.Writer.WriteLine(string.Empty);
+
+			this.PrintTestCondition();
+
+			return result;
 		}
 
-		void IQuestion.SetUpData(string dataString)
+		public virtual void SetUpData(string dataString)
 		{
-			throw new NotImplementedException();
+			List<string> quest = dataString.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			for (int i = 0; i < quest.Count; ++i)
+			{
+				this.questions.Add(quest[i]);
+			}
 		}
 
-		string IQuestion.BuildQuestionData()
+		public virtual string BuildQuestionData()
 		{
-			throw new NotImplementedException();
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine(this.Qt.ToString());
+			sb.AppendLine(this.Description);
+			sb.AppendLine(this.CorrectAnswer);
+			sb.AppendLine(this.Points.ToString());
+			sb.AppendLine(this.questions.Count.ToString());
+
+			for (int i = 0; i < this.questions.Count; ++i)
+			{
+				sb.AppendLine(this.questions[i]);
+			}
+
+			return sb.ToString();
 		}
 
-		string IQuestion.ToStringFile()
+		protected override void PrintQuestion()
 		{
-			throw new NotImplementedException();
+			this.Writer.WriteLine($"{this.Description}\t({this.Points} points)");
+
+			for (int i = 0; i < this.questions.Count; ++i)
+			{
+				char ch = (char)((int)'A' + i);
+				this.Writer.WriteLine($"{ch}) {this.questions[i]}");
+			}
+
+			base.PrintQuestion();
 		}
 
-		override;
+		protected override bool AnswerAQuestion()
+		{
+			bool result = false;
 
-    SingleChoiceQuestion(IWriter*, IReader*, String&, String&, unsigned int, bool);
-		SingleChoiceQuestion(IWriter*, IReader*, String&, String&, unsigned int, bool, unsigned int);
+			string answer = this.Reader.ReadLine();
 
-		virtual ~SingleChoiceQuestion() { };
+			if (answer == this.CorrectAnswer)
+			{
+				result = true;
+			}
+
+			return result;
+		}
+
+		public virtual string ToStringFile()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine($"Description: {this.Description}");
+
+			sb.AppendLine("Posible answers:");
+
+			for (int i = 0; i < this.Questions.Count; i++)
+			{
+				char ch = (char)((int)'a' + i);
+
+				sb.AppendLine($"{ch}) {this.Questions[i]}");
+			}
+
+			sb.AppendLine($"Correct answer: {this.CorrectAnswer}");
+
+			return sb.ToString();
+		}
 	}
 }
