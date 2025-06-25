@@ -58,7 +58,7 @@
 		public const string MESSAGES_FILE_NAME = "messages.txt";
 
 		public const char FILENAME_TO_DATA_SEPARATOR = '$';
-		public const char ROW_DATA_SEPARATOR = '\n';
+		public const string ROW_DATA_SEPARATOR = "\n\r";
 		public const char ELEMENT_DATA_SEPARATOR = ' ';
 		public const char QUIZ_ELEMENT_DATA_SEPARATOR = '|';
 		public const char MESSAGE_ELEMENT_DATA_SEPARATOR = '|';

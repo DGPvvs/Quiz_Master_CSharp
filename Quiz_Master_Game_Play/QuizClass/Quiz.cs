@@ -83,7 +83,7 @@
 
 			if (qs == QuizStatus.NewQuiz)
 			{
-				List<string> v = s.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> v = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				string separator = QUIZ_ELEMENT_DATA_SEPARATOR.ToString();
 				quizFileName = $"{this.Id.ToString()}Quiz.txt";
@@ -96,7 +96,7 @@
 
 				v.Add(newQuizString);
 
-				string allQuizzesString = string.Join(ROW_DATA_SEPARATOR, v);
+				string allQuizzesString = string.Join(Environment.NewLine, v);
 
 				allQuizzesString = $"{QUIZZES_FILE_NAME}{FILENAME_TO_DATA_SEPARATOR}{allQuizzesString}";
 
@@ -107,7 +107,7 @@
 				List<String> resultVec = new List<string>();
 
 				List<string> quizzesVec = s
-					.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+					.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 					.ToList();
 
 				for (int i = 0; i < quizzesVec.Count; i++)
@@ -133,7 +133,7 @@
 					}
 				}
 
-				string allQuizzesString = string.Join(ROW_DATA_SEPARATOR, resultVec);
+				string allQuizzesString = string.Join(Environment.NewLine, resultVec);
 
 				allQuizzesString = $"{QUIZZES_FILE_NAME}{FILENAME_TO_DATA_SEPARATOR}{allQuizzesString}";
 
@@ -145,7 +145,7 @@
 			{
 				List<string> resultVec = new List<string>();
 
-				List<string> quizzesVec = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> quizzesVec = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				for (int i = 0; i < quizzesVec.Count; i++)
 				{
@@ -167,7 +167,7 @@
 					}
 				}
 
-				string allQuizzesString = string.Join(GlobalConstants.ROW_DATA_SEPARATOR, resultVec);
+				string allQuizzesString = string.Join(Environment.NewLine, resultVec);
 
 				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 
@@ -175,7 +175,7 @@
 			}
 			else if (qs == QuizStatus.UnlikeQuiz)
 			{
-				List<string> quizzesVec = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				List<string> quizzesVec = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				List<string> resultVec = new List<string>();
 
@@ -199,7 +199,7 @@
 					}
 				}
 
-				string allQuizzesString = string.Join(GlobalConstants.ROW_DATA_SEPARATOR, resultVec);
+				string allQuizzesString = string.Join(Environment.NewLine, resultVec);
 
 				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 

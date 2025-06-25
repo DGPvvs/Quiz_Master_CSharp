@@ -104,7 +104,7 @@
 
 			List<string> v = new List<string>();
 
-			this.User.SetUpUserData(us, v, UserOptions.Empty);
+			this.User.SetUpUserData(us, ref v, UserOptions.Empty);
 		}
 
 		private void LoadConfig()
@@ -113,7 +113,9 @@
 			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
 
 
-			List<string> v = configString.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+
+			List<string> v = configString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			this.MaxUserId = uint.Parse(v[0]);
 			this.MaxQuizId = uint.Parse(v[1]);

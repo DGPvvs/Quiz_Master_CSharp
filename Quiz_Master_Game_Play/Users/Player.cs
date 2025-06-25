@@ -42,7 +42,7 @@
 
 			List<string> v = new List<string>();
 
-			this.SetUpUserData(us, v, uo);
+			this.SetUpUserData(us, ref v, uo);
 			this.SaveData();
 		}
 
@@ -131,9 +131,9 @@
 			return sb.ToString();
 		}
 
-		public override void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
+		public override void SetUpUserData(UserStruct us, ref List<string> v, UserOptions uo)
 		{
-			base.SetUpUserData(us, v, uo);
+			base.SetUpUserData(us, ref v, uo);
 
 			if (uo.HasFlag(UserOptions.NewUserCreated))
 			{
@@ -190,7 +190,7 @@
 
 			List<string> quizzesVec =  this.GetQuiz
 				.FindAllQuizzes()
-				.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 				.ToList();
 
 			for (int k = 0; k < quizzesVec.Count; k++)
@@ -348,7 +348,7 @@
 			List<string> quizzesVec = this
 				.GetQuiz
 				.FindAllQuizzes()
-				.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 				.ToList();
 
 			for (int i = 0; i < quizzesVec.Count; i++)
@@ -368,7 +368,7 @@
 			if (quizString != ERROR)
 			{
 				List<string> quizVec = quizString
-					.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+					.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 					.ToList();
 
 				quiz = this.LoadQuizHeader(quizVec);

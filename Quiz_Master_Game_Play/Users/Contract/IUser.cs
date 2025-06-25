@@ -35,8 +35,10 @@
 
 		string AllUsers(string users);
 
-		void SetUpUserData(UserStruct us, List<string> list, UserOptions uo);
+		void SetUpUserData(UserStruct us, ref List<string> list, UserOptions uo);
 
 		void SaveData();
+
+		void Help();
 	}
 }

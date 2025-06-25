@@ -19,11 +19,11 @@
 		{
 			string allMessages = this.FindAllMessages();
 
-			List<string> messagesVec = allMessages.Split(ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> messagesVec = allMessages.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			messagesVec.Add(s);
 
-			string result = string.Join(ROW_DATA_SEPARATOR, messagesVec);
+			string result = string.Join(Environment.NewLine, messagesVec);
 
 			this.SaveMessage(result);
 		}

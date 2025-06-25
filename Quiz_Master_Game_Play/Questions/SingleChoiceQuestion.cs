@@ -44,7 +44,7 @@
 
 		public virtual void SetUpData(string dataString)
 		{
-			List<string> quest = dataString.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> quest = dataString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			for (int i = 0; i < quest.Count; ++i)
 			{

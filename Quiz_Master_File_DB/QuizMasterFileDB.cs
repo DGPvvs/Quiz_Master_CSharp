@@ -19,6 +19,9 @@
 			List<ICommand> commands = new List<ICommand>()
 			{
 				new LogoutUserCommand(GlobalConstants.LOGOUT)
+				, new HelpUserCommand(GlobalConstants.HELP)
+				, new LoginUserCommand(GlobalConstants.LOGIN)
+				, new SignupUserCommand(GlobalConstants.SIGNUP)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);
@@ -30,7 +33,8 @@
 			}
 			catch (Exception ex)
 			{
-				writer.WriteLine("ERROREXT");
+				writer.WriteLine(ex.Message);
+				throw ex;
 			}
 		}
 	}

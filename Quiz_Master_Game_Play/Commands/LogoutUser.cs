@@ -4,8 +4,6 @@
 	using Quiz_Master_Game_Play.Game.Contract;
 	using Quiz_Master_Game_Play.Users;
 
-	using static Common.Constants.GlobalConstants;
-
 	public class LogoutUserCommand : Command
 	{
 		public LogoutUserCommand(string commandString) : base(commandString)

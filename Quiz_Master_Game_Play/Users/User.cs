@@ -164,7 +164,7 @@
 
 			users = this.AllUsers(users);
 
-			List<string> usersVec = users.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> usersVec = users.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			int userIndex = this.FindUserIndex(us, usersVec);
 
@@ -199,7 +199,7 @@
 			return users;
 		}
 
-		public virtual void SetUpUserData(UserStruct us, List<string> v, UserOptions uo)
+		public virtual void SetUpUserData(UserStruct us, ref List<string> v, UserOptions uo)
 		{
 			if ((uo & UserOptions.NewUserCreated) == UserOptions.NewUserCreated)
 			{
@@ -211,7 +211,7 @@
 				string s = us.FileName;
 				this.provider.Action(ref s, ProviderOptions.UserLoad);
 
-				v = s.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+				v = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				this.FirstName = v[0];
 				this.LastName = v[1];
@@ -224,7 +224,7 @@
 			this.Password = uint.Parse(us.Password);
 		}
 
-		public virtual string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{GlobalConstants.ROW_DATA_SEPARATOR}{this.lastName}{GlobalConstants.ROW_DATA_SEPARATOR}";
+		public virtual string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{Environment.NewLine}{this.lastName}{Environment.NewLine}";
 
 		public virtual void SaveData()
 		{

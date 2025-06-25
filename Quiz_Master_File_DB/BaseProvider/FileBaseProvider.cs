@@ -4,6 +4,8 @@
 	using Common.Constants;
 	using Common.Enums;
 
+	using static Common.Constants.GlobalConstants;
+
 	public class FileBaseProvider : IBaseProvider
 	{
 		private void FileSave(string str)
@@ -23,7 +25,11 @@
 				return File.ReadAllText(str);
 			}
 
-			return string.Empty;
+			string str1 = $"{str}{FILENAME_TO_DATA_SEPARATOR}{10}{Environment.NewLine}{0}";
+
+			this.FileSave(str1);
+
+			return this.FileLoad(str);
 		}
 
 
