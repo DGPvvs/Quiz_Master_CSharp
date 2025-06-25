@@ -12,7 +12,7 @@
 		{
 			List<string> v = str.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-			if (!File.Exists(v[0]))
+			if (File.Exists(v[0]))
 			{
 				File.WriteAllText(v[0], v[1]);
 			}

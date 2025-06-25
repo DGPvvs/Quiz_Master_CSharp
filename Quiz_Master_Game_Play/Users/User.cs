@@ -221,7 +221,10 @@
 			this.FileName = us.FileName;
 			this.Id = us.Id;
 			this.UserName = us.UserName;
-			this.Password = uint.Parse(us.Password);
+			if (us.Password != string.Empty)
+			{
+				this.Password = uint.Parse(us.Password);
+			}
 		}
 
 		public virtual string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{Environment.NewLine}{this.lastName}{Environment.NewLine}";
