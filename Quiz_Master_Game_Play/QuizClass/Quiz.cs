@@ -41,7 +41,7 @@
 
 		public string QuizName => this.quizName;
 
-		public string UserName() => this.userName;
+		public string UserName => this.userName;
 
 		public string GetUserFullName()
 		{

@@ -18,10 +18,13 @@
 
 			List<ICommand> commands = new List<ICommand>()
 			{
-				new LogoutUserCommand(GlobalConstants.LOGOUT)
+				  new LogoutUserCommand(GlobalConstants.LOGOUT)
 				, new HelpUserCommand(GlobalConstants.HELP)
 				, new LoginUserCommand(GlobalConstants.LOGIN)
 				, new SignupUserCommand(GlobalConstants.SIGNUP)
+				, new ViewProfileCommand(GlobalConstants.VIEW_PROFILE)
+				, new CreateQuizCommand(GlobalConstants.CREATE_QUIZ)
+				, new BanCommand(GlobalConstants.BAN)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);

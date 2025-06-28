@@ -53,7 +53,17 @@
 			this.Init();
 		}
 
-		private void Init()
+		public uint Level => this.level;
+
+		public uint Points => this.points;
+
+		public List<string> ListCreatedQuizzes => this.listCreatedQuizzes;
+
+		public List<uint> ListLikedQuizzes => this.listLikedQuizzes;
+		
+		public List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes;
+
+        private void Init()
 		{
 			this.listCreatedQuizzes = new List<string>();
 			this.listLikedQuizzes = new List<uint>();

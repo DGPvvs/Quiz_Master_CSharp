@@ -8,14 +8,23 @@
 
 	public class FileBaseProvider : IBaseProvider
 	{
-		private void FileSave(string str)
+		private void FileSave(string str, bool isFileExist)
 		{
 			List<string> v = str.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-			if (File.Exists(v[0]))
+			try
 			{
-				File.WriteAllText(v[0], v[1]);
+				if (v != null)
+				{
+					File.WriteAllText(v[0], v[1]);
+				}
 			}
+			catch (FieldAccessException fae)
+			{
+
+				throw fae;
+			}
+
 		}
 
 		private string FileLoad(string str)
@@ -27,7 +36,7 @@
 
 			string str1 = $"{str}{FILENAME_TO_DATA_SEPARATOR}{10}{Environment.NewLine}{0}";
 
-			this.FileSave(str1);
+			this.FileSave(str1, false);
 
 			return this.FileLoad(str);
 		}
@@ -47,17 +56,22 @@
 			else if (options == ProviderOptions.ConfigSave)
 			{
 				string s = $"{GlobalConstants.CONFIG_FILE_NAME}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{str}";
-				this.FileSave(s);
+				this.FileSave(s, true);
 			}
 			else if (options == ProviderOptions.UserFind)
 			{
 				string s = GlobalConstants.USERS_FILE_NAME;
 				str = this.FileLoad(s);
 			}
-			else if (options == ProviderOptions.NewUserSave || options == ProviderOptions.EditUser)
+			else if (options == ProviderOptions.NewUserSave)
 			{
 				string s = $"{GlobalConstants.USERS_FILE_NAME}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{str}";
-				this.FileSave(s);
+				this.FileSave(s, true);
+			}
+			else if (options == ProviderOptions.EditUser)
+			{
+				string s = $"{GlobalConstants.USERS_FILE_NAME}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{str}";
+				this.FileSave(s, true);
 			}
 			else if ((options == ProviderOptions.UserLoad) || (options == ProviderOptions.QuizFind) || (options == ProviderOptions.MessagesLoad) || (options == ProviderOptions.QuizLoad))
 			{
@@ -67,7 +81,7 @@
 			else if ((options == ProviderOptions.UserSave) || (options == ProviderOptions.QuizSave) || (options == ProviderOptions.QuizIndexSave) || (options == ProviderOptions.MessagesSave))
 			{
 				string s = str;
-				this.FileSave(s);
+				this.FileSave(s, false);
 			}
 		}
 	}

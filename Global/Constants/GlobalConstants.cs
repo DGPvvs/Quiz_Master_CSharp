@@ -84,5 +84,32 @@
 		public const string SIGNUP = "signup";
 		public const string LOGOUT = "logout";
 		public const string HELP = "help";
+
+		public const string BAN = "ban";
+		public const string PENDING = "pending";
+		public const string APPROVE_QUIZ = "approve-quiz";
+		public const string REJECT_QUIZ = "reject-quiz";
+		public const string REMOVE_QUIZ = "remove-quiz";
+		public const string VIEW_REPORTS = "view-reports";
+
+		public const string VIEW_PROFILE = "view-profile";
+		public const string VIEW = "view";
+		public const string CREATE_QUIZ = "create-quiz";
+		public const string QUIZZES = "quizzes";
+		public const string REPORT_QUIZ = "report-quiz";
+		public const string MESSAGES = "messages";
+		public const string ADD_TO_FAVS = "add-to-favs";
+		public const string REMOVE_FROM_FAVS = "remove-from-favs";
+		public const string LIKE_QUIZ = "like-quiz";
+		public const string UNLIKE_QUIZ = "unlike-quiz";
+		public const string VIEW_FINISHED_CHALLEENGES = "view-finished-challeenges";
+		public const string VIEW_CHALLEENGES = "view-challeenges";
+		public const string EDIT_QUIZ = "edit-quiz";
+		public const string START_QUIZ = "start-quiz";
+		public const string SAVE_QUIZ = "save-quiz";
+		public const string EDIT_PROFILE = "edit-profile";
+		public const string TEST = "test";
+		public const string NORMAL = "normal";
+		public const string SHUFFLE = "shuffle";
 	}
 }
