@@ -25,9 +25,15 @@
 				, new ViewProfileCommand(GlobalConstants.VIEW_PROFILE)
 				, new CreateQuizCommand(GlobalConstants.CREATE_QUIZ)
 				, new BanCommand(GlobalConstants.BAN)
+				, new PendingCommand(GlobalConstants.PENDING)
+				, new ApproveQuizCommand(GlobalConstants.APPROVE_QUIZ)
+				, new ViewReportsCommand(GlobalConstants.VIEW_REPORTS)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);
+
+			//game.Init();
+			//game.Run();
 
 			try
 			{

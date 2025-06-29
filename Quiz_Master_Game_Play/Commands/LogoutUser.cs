@@ -15,7 +15,7 @@
 			if (this.CommandString == game.Cmd.Command)
 			{
 				game.User.SaveData();
-				game.User = null;
+				game.User = null!;
 
 				if (game.Cmd.Param5 != GlobalConstants.EXIT)
 				{

@@ -4,6 +4,8 @@
 	using Common.Classes;
 	using Common.Enums;
 	using Common.IO.Contract;
+	using Quiz_Master_Game_Play.MessageClass;
+	using Quiz_Master_Game_Play.QuizClass;
 
 	public interface IUser
 	{
@@ -40,5 +42,10 @@
 		void SaveData();
 
 		void Help();
+
+		int FindUserIndex(UserStruct us, List<string> usersVec);
+
+		Quiz Quiz { get; }
+		Message Message { get; }
 	}
 }

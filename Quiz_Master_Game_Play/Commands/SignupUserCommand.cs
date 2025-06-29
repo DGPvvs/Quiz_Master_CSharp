@@ -46,7 +46,7 @@
 				users = game.User.AllUsers(users);
 				List<string> usersVec = users.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				string newUser = $"{us.UserName} {game.User.Hash(us.Password)} ";
+				string newUser = $"{us.UserName} {game.User.Hash(us.Password!)} ";
 				string fileName = $"{us.UserName}{++game.MaxUserId}.txt";
 
 				newUser = $"{newUser}{fileName} {game.MaxUserId} {UserOptions.OK}";

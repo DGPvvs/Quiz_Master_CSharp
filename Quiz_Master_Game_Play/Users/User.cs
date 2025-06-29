@@ -10,8 +10,6 @@
 	using Quiz_Master_Game_Play.Users.Contract;
 	using System.Collections.Generic;
 
-	using static Common.Constants.GlobalConstants;
-
 	public class User : IUser
 	{
 		private uint id;
@@ -60,20 +58,20 @@
 
 		public string Name => $"{this.firstName} {this.lastName}";
 
-		public string FirstName
+		public string? FirstName
 		{
-			set => this.firstName = value;
+			set => this.firstName = value!;
 		}
 
-		public string LastName
+		public string? LastName
 		{
-			set => this.lastName = value;
+			set => this.lastName = value!;
 		}
 
-		public string UserName
+		public string? UserName
 		{
 			get => this.userName;
-			set => this.userName = value;
+			set => this.userName = value!;
 		}
 
 		public uint Id
@@ -82,13 +80,13 @@
 			set => this.id = value;
 		}
 
-		public string FileName
+		public string? FileName
 		{
 			get => this.fileName;
-			set => this.fileName = value;
+			set => this.fileName = value!;
 		}
 
-		protected int FindUserIndex(UserStruct us, List<string> usersVec)
+		public int FindUserIndex(UserStruct us, List<string> usersVec)
 		{
 			int result = -1;
 			int i = 0;
@@ -123,7 +121,7 @@
 
 		protected bool GenerateReason(CommandStruct cmdStr)
 		{
-			List<string> v = cmdStr.CommandLine.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> v = cmdStr.CommandLine!.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			List<string> v1 = new List<string>();
 
@@ -142,9 +140,9 @@
 			return false;
 		}
 
-		protected Quiz GetQuiz => this.quiz;
+		public Message Message => this.message;
 
-		protected Message GetMessage => this.message;
+		public Quiz Quiz => this.quiz;
 
 		public uint Hash(string str)
 		{
@@ -164,7 +162,7 @@
 
 			users = this.AllUsers(users);
 
-			List<string> usersVec = users.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
+			List<string> usersVec = users.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			int userIndex = this.FindUserIndex(us, usersVec);
 
@@ -208,7 +206,7 @@
 			}
 			else
 			{
-				string s = us.FileName;
+				string s = us.FileName!;
 				this.provider.Action(ref s, ProviderOptions.UserLoad);
 
 				v = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -220,10 +218,10 @@
 
 			this.FileName = us.FileName;
 			this.Id = us.Id;
-			this.UserName = us.UserName;
+			this.UserName = us.UserName!;
 			if (us.Password != string.Empty)
 			{
-				this.Password = uint.Parse(us.Password);
+				this.Password = uint.Parse(us.Password!);
 			}
 		}
 

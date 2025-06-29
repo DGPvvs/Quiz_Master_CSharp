@@ -40,7 +40,7 @@
 				uint quizId = game.MaxQuizId + 1;
 				game.MaxQuizId = quizId;
 
-				Quiz quiz = new Quiz(game.Writer, game.Reader, game.Provider, quizName, game.User.UserName, quizId, numOfQuestions, 0);
+				Quiz quiz = new Quiz(game.Writer, game.Reader, game.Provider, quizName, game.User.UserName!, quizId, numOfQuestions, 0);
 
 				for (int i = 0; i < numOfQuestions; i++)
 				{

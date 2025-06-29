@@ -18,7 +18,7 @@
 				if (game.User.IsHasLog)
 				{
 					game.Writer.WriteLine("You cannot log in a new user before logging out!");
-					return false;
+					return true;
 				}
 
 				UserStruct us = new UserStruct();
@@ -45,9 +45,10 @@
 					game.LoadUser(us);
 
 					string s = $"Welcome {game.User.Name}!";
-					game.Writer.WriteLine(s);
-					return true;
+					game.Writer.WriteLine(s);					
 				}
+
+				return true;
 			}
 
 			return false;

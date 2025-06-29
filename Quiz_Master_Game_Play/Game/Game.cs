@@ -33,6 +33,7 @@
 
 			this.MaxUserId = 0;
 			this.MaxQuizId = 0;
+			this.user = null!;
 		}
 
 		public uint MaxUserId
@@ -129,18 +130,19 @@
 			{
 				this.SetCommandStruct();
 
+				if (this.Cmd.Command == GlobalConstants.EXIT)
+				{
+					isLoopExit = true;
+					this.Cmd.Command = GlobalConstants.LOGOUT;
+				}
+
 				foreach (var command in this.commands)
 				{
 					if (command.Execute(this))
 					{
 						break;
 					}
-				}
-
-				if (this.Cmd.Command == GlobalConstants.EXIT)
-				{
-					isLoopExit = true;
-				}
+				}				
 			}
 		}
 

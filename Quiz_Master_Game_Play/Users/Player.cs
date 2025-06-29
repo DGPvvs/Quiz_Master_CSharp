@@ -198,7 +198,7 @@
 				this.listFinishedChallenges.Add(v[i]);
 			}
 
-			List<string> quizzesVec =  this.GetQuiz
+			List<string> quizzesVec =  this.Quiz
 				.FindAllQuizzes()
 				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 				.ToList();
@@ -274,7 +274,7 @@
 
 					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR}New challenge complited! You create { createdQuizCount} quizzes! {point} points added.";
 
-					this.GetMessage.SendMessage(message);
+					this.Message.SendMessage(message);
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {createdQuizCount} create quizzes";
 
@@ -295,7 +295,7 @@
 
 					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR} New challenge complited! You solved {normalQuizCount} quizzes in normal mode! {point} points added.";
 
-					this.GetMessage.SendMessage(message);
+					this.Message.SendMessage(message);
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Complete {normalQuizCount} quizzes in normal mode";
 
@@ -315,7 +315,7 @@
 
 					string message = $"{this.Id}{MESSAGE_ELEMENT_SEPARATOR}New challenge complited! You solved {testQuizCount} quizzes in test mode! {point} points added.";
 
-					this.GetMessage.SendMessage(message);
+					this.Message.SendMessage(message);
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {testQuizCount} quizzes in test mode";
 
@@ -344,7 +344,7 @@
 
 				string message = $"Level {this.level} reached!";
 
-				this.GetMessage.SendMessage(message);
+				this.Message.SendMessage(message);
 			}
 		}
 
@@ -353,10 +353,10 @@
 		{
 			uint id = uint.Parse(idString);
 			string quizString = ERROR;
-			Quiz quiz = null;			
+			Quiz quiz = null!;			
 
 			List<string> quizzesVec = this
-				.GetQuiz
+				.Quiz
 				.FindAllQuizzes()
 				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 				.ToList();
