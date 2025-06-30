@@ -3,7 +3,6 @@
 	using Common.BaseProvider.Contract;
 	using Common.Classes;
 	using Common.IO.Contract;
-	using Quiz_Master_Game_Play.Commands.Contract;
 	using Quiz_Master_Game_Play.Users.Contract;
 
 	public interface IGame
@@ -16,7 +15,7 @@
 
 		IBaseProvider Provider { get; }
 
-		List<ICommand> Commands { get; }
+		Invoker Invoker { get; }
 
 		CommandStruct Cmd { get; }
 

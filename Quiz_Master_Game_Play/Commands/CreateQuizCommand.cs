@@ -24,71 +24,65 @@
 			this.game = null!;
 		}
 
-		public override bool Execute(IGame game)
+		public override void Execute(IGame game)
 		{
-			if ((game.User is Player) && (game.Cmd.Command == this.CommandString) && (game.Cmd.ParamRange == 1))
+
+			this.game = game;
+
+			this.game.Writer.Write("Enter quiz title: ");
+			string quizName = game.Reader.ReadLine();
+
+			this.game.Writer.Write("Enter number of questions: ");
+			string numOfQuestionsString = game.Reader.ReadLine();
+			uint numOfQuestions = uint.Parse(numOfQuestionsString);
+
+			uint quizId = game.MaxQuizId + 1;
+			this.game.MaxQuizId = quizId;
+
+			Quiz quiz = new Quiz(this.game.Writer, this.game.Reader, this.game.Provider, quizName, this.game.User.UserName!, quizId, numOfQuestions, 0);
+
+			for (int i = 0; i < numOfQuestions; i++)
 			{
-				this.game = game;
+				this.game.Writer.Write($"Enter question {i + 1} type(T/F, SC, MC, ShA, MP): ");
+				string questionType = game.Reader.ReadLine();
 
-				game.Writer.Write("Enter quiz title: ");
-				string quizName = game.Reader.ReadLine();
+				this.game.Writer.Write("Enter description: ");
+				string description = game.Reader.ReadLine();
 
-				game.Writer.Write("Enter number of questions: ");
-				string numOfQuestionsString = game.Reader.ReadLine();
-				uint numOfQuestions = uint.Parse(numOfQuestionsString);
-
-				uint quizId = game.MaxQuizId + 1;
-				game.MaxQuizId = quizId;
-
-				Quiz quiz = new Quiz(game.Writer, game.Reader, game.Provider, quizName, game.User.UserName!, quizId, numOfQuestions, 0);
-
-				for (int i = 0; i < numOfQuestions; i++)
+				if (questionType == TF)
 				{
-					game.Writer.Write($"Enter question {i + 1} type(T/F, SC, MC, ShA, MP): ");
-					string questionType = game.Reader.ReadLine();
-
-					game.Writer.Write("Enter description: ");
-					string description = game.Reader.ReadLine();
-
-					if (questionType == TF)
-					{
-						TrueOrFalseQuestion question = this.CreateTF(description);
-						quiz.Questions.Add(question);
-					}
-					else if (questionType == SC)
-					{
-						SingleChoiceQuestion question = this.CreateSC(description);
-						quiz.Questions.Add(question);
-					}
-					else if (questionType == MC)
-					{
-						MultipleChoiceQuestion question = this.CreateMC(description);
-						quiz.Questions.Add(question);
-					}
-					else if (questionType == ShA)
-					{
-						ShortAnswerQuestion question = this.CreateShA(description);
-						quiz.Questions.Add(question);
-					}
-					else if (questionType == MP)
-					{
-						MatchingPairsQuestion question = this.CreateMP(description);
-						quiz.Questions.Add(question);
-					}
-					else
-					{
-						game.Writer.WriteLine("Incorrect Question Type");
-						i--;
-					}
+					TrueOrFalseQuestion question = this.CreateTF(description);
+					quiz.Questions.Add(question);
 				}
-
-				quiz.SaveQuiz(QuizStatus.NewQuiz, 0);
-				game.SaveConfig();
-
-				return true;
+				else if (questionType == SC)
+				{
+					SingleChoiceQuestion question = this.CreateSC(description);
+					quiz.Questions.Add(question);
+				}
+				else if (questionType == MC)
+				{
+					MultipleChoiceQuestion question = this.CreateMC(description);
+					quiz.Questions.Add(question);
+				}
+				else if (questionType == ShA)
+				{
+					ShortAnswerQuestion question = this.CreateShA(description);
+					quiz.Questions.Add(question);
+				}
+				else if (questionType == MP)
+				{
+					MatchingPairsQuestion question = this.CreateMP(description);
+					quiz.Questions.Add(question);
+				}
+				else
+				{
+					this.game.Writer.WriteLine("Incorrect Question Type");
+					i--;
+				}
 			}
 
-			return false;
+			quiz.SaveQuiz(QuizStatus.NewQuiz, 0);
+			this.game.SaveConfig();
 		}
 
 		private MatchingPairsQuestion CreateMP(string description)
@@ -259,6 +253,16 @@
 			TrueOrFalseQuestion question = new TrueOrFalseQuestion(this.game.Writer, this.game.Reader, description, answer, points, false);
 
 			return question;
+		}
+
+		public override bool CanExecute(IGame game)
+		{
+			if ((game.User is Player) && (game.Cmd.Command == this.CommandString) && (game.Cmd.ParamRange == 1))
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

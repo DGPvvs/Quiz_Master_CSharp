@@ -18,18 +18,19 @@
 		private IReader reader;
 		private IWriter writer;
 		private IBaseProvider provider;
-		private List<ICommand> commands;
+		private Invoker invoker;
 		private CommandStruct cmd;
 
 		private uint maxUserId;
 		private uint maxQuizId;
 
-		public Game(IWriter writer, IReader reader, IBaseProvider provider, List<ICommand> commands)
+		public Game(IWriter writer, IReader reader, IBaseProvider provider, IEnumerable<ICommand> commands)
 		{
 			this.writer = writer;
 			this.reader = reader;
 			this.provider = provider;
-			this.commands = commands;
+
+			this.invoker = new Invoker(commands);
 
 			this.MaxUserId = 0;
 			this.MaxQuizId = 0;
@@ -60,7 +61,7 @@
 
 		public IBaseProvider Provider => this.provider;
 
-		public List<ICommand> Commands => this.commands;
+		public Invoker Invoker => this.invoker;
 
 		public CommandStruct Cmd => this.cmd;
 
@@ -136,13 +137,7 @@
 					this.Cmd.Command = GlobalConstants.LOGOUT;
 				}
 
-				foreach (var command in this.commands)
-				{
-					if (command.Execute(this))
-					{
-						break;
-					}
-				}				
+				this.Invoker.Handle(this);
 			}
 		}
 

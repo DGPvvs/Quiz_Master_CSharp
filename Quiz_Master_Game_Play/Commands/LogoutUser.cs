@@ -10,22 +10,23 @@
 		{
 		}
 
-		public override bool Execute(IGame game)
+		public override bool CanExecute(IGame game)
 		{
 			if (this.CommandString == game.Cmd.Command)
 			{
-				game.User.SaveData();
-				game.User = null!;
-
-				if (game.Cmd.Param5 != GlobalConstants.EXIT)
-				{
-					game.User = new User(game.Writer, game.Reader, game.Provider);
-				}
-
 				return true;
 			}
 
 			return false;
+		}
+
+		public override void Execute(IGame game)
+		{
+
+			game.User.SaveData();
+			game.User = null!;
+
+			game.User = new User(game.Writer, game.Reader, game.Provider);
 		}
 	}
 }

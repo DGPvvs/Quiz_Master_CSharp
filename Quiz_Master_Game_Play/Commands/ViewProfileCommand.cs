@@ -21,23 +21,16 @@
 		{
 		}
 
-		public override bool Execute(IGame game)
+		public override void Execute(IGame game)
 		{
-			if (game.User is Player && this.CommandString == game.Cmd.Command)
+			if (game.Cmd.ParamRange == 1)
 			{
-				if (game.Cmd.ParamRange == 1)
-				{
-					this.ViewSelfProfile((game.User as Player)!, DatBuild.VIEW_SELF_PROFILE);
-					return true;
-				}
-				else if (game.Cmd.ParamRange == 2)
-				{
-					this.ViewOtherProfile(game.Cmd.Param1, game, DatBuild.VIEW_OTHER_PROFILE);
-					return true;
-				}
-			}			
-
-			return false;
+				this.ViewSelfProfile((game.User as Player)!, DatBuild.VIEW_SELF_PROFILE);
+			}
+			else if (game.Cmd.ParamRange == 2)
+			{
+				this.ViewOtherProfile(game.Cmd.Param1, game, DatBuild.VIEW_OTHER_PROFILE);
+			}
 		}
 
 		private void ViewOtherProfile(string? userName, IGame game, DatBuild vIEW_OTHER_PROFILE)
@@ -69,7 +62,7 @@
 			}
 		}
 
-		private void ViewSelfProfile(User user,  DatBuild option)
+		private void ViewSelfProfile(User user, DatBuild option)
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -119,6 +112,16 @@
 			}
 
 			user.Writer.WriteLine(sb.ToString().TrimEnd());
+		}
+
+		public override bool CanExecute(IGame game)
+		{
+			if (game.User is Player && this.CommandString == game.Cmd.Command)
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

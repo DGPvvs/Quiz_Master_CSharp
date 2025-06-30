@@ -14,6 +14,8 @@
 
 		public string CommandString => this.commandString;
 
-		public abstract bool Execute(IGame game);
+		public abstract bool CanExecute(IGame game);
+
+		public abstract void Execute(IGame game);
 	}
 }

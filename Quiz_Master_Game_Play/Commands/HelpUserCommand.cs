@@ -8,16 +8,19 @@
 		{
 		}
 
-		public override bool Execute(IGame game)
+		public override bool CanExecute(IGame game)
 		{
 			if (this.CommandString == game.Cmd.Command)
 			{
-				game.User.Help();
-
 				return true;
 			}
 
 			return false;
+		}
+
+		public override void Execute(IGame game)
+		{
+			game.User.Help();
 		}
 	}
 }

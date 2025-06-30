@@ -28,6 +28,7 @@
 				, new PendingCommand(GlobalConstants.PENDING)
 				, new ApproveQuizCommand(GlobalConstants.APPROVE_QUIZ)
 				, new ViewReportsCommand(GlobalConstants.VIEW_REPORTS)
+				, new QuizzesCommand(GlobalConstants.QUIZZES)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);

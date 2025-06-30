@@ -5,6 +5,7 @@
 	public interface ICommand
 	{
         public string CommandString { get; }
-        public bool Execute(IGame game);
+        public void Execute(IGame game);
+		public bool CanExecute(IGame game);
 	}
 }

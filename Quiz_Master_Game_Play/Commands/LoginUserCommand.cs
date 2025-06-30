@@ -11,47 +11,50 @@
 		{
 		}
 
-		public override bool Execute(IGame game)
+		public override bool CanExecute(IGame game)
 		{
 			if (this.CommandString == game.Cmd.Command && game.Cmd.ParamRange == 3)
 			{
-				if (game.User.IsHasLog)
-				{
-					game.Writer.WriteLine("You cannot log in a new user before logging out!");
-					return true;
-				}
-
-				UserStruct us = new UserStruct();
-
-				us.UserName = game.Cmd.Param1;
-				us.Password = game.Cmd.Param2;
-
-				UserOptions uo = game.User.FindUserData(us, GlobalConstants.EXSIST);
-
-				if (uo == UserOptions.NotFound)
-				{
-					game.Writer.WriteLine("User not found!");
-				}
-				else if (uo == UserOptions.WrongPassword)
-				{
-					game.Writer.WriteLine("Wrong password!");
-				}
-				else if (uo == UserOptions.Ban)
-				{
-					game.Writer.WriteLine("Sorry, the user has been banned!");
-				}
-				else if (uo.HasFlag(UserOptions.OK))
-				{
-					game.LoadUser(us);
-
-					string s = $"Welcome {game.User.Name}!";
-					game.Writer.WriteLine(s);					
-				}
-
 				return true;
 			}
 
 			return false;
+		}
+
+		public override void Execute(IGame game)
+		{
+			if (game.User.IsHasLog)
+			{
+				game.Writer.WriteLine("You cannot log in a new user before logging out!");
+				return;
+			}
+
+			UserStruct us = new UserStruct();
+
+			us.UserName = game.Cmd.Param1;
+			us.Password = game.Cmd.Param2;
+
+			UserOptions uo = game.User.FindUserData(us, GlobalConstants.EXSIST);
+
+			if (uo == UserOptions.NotFound)
+			{
+				game.Writer.WriteLine("User not found!");
+			}
+			else if (uo == UserOptions.WrongPassword)
+			{
+				game.Writer.WriteLine("Wrong password!");
+			}
+			else if (uo == UserOptions.Ban)
+			{
+				game.Writer.WriteLine("Sorry, the user has been banned!");
+			}
+			else if (uo.HasFlag(UserOptions.OK))
+			{
+				game.LoadUser(us);
+
+				string s = $"Welcome {game.User.Name}!";
+				game.Writer.WriteLine(s);
+			}
 		}
 	}
 }
