@@ -46,6 +46,9 @@
 		int FindUserIndex(UserStruct us, List<string> usersVec);
 
 		Quiz Quiz { get; }
+
 		Message Message { get; }
+
+		bool GenerateReason(CommandStruct cmdStr, ref string? reason);
 	}
 }

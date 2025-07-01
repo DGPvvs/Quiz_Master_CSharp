@@ -119,7 +119,7 @@
 			return result;
 		}
 
-		protected bool GenerateReason(CommandStruct cmdStr)
+		public bool GenerateReason(CommandStruct cmdStr, ref string? reason)
 		{
 			List<string> v = cmdStr.CommandLine!.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -132,7 +132,7 @@
 					v1.Add(v[i]);
 				}
 
-				cmdStr.Param2 = string.Join(GlobalConstants.ELEMENT_DATA_SEPARATOR, v1);
+				reason = string.Join(GlobalConstants.ELEMENT_DATA_SEPARATOR, v1);
 
 				return true;
 			}
