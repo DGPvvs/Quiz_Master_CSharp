@@ -49,6 +49,20 @@
 
 		Message Message { get; }
 
-		bool GenerateReason(CommandStruct cmdStr, ref string? reason);
+		bool GenerateReason(CommandStruct cmdStr, ref string? reason);		
+
+		public uint Password { get; set; }
+
+		public uint NumberCreatedQuizzes { get; }
+
+		public uint NumberSolvedTestQuizzes { get; }
+		
+		public uint NumberSolvedNormalQuizzes { get; }
+		
+		public uint NumberLikedQuizzes { get; set; }
+
+		public List<string> ListFinishedChallenges { get; }
+
+		public List<uint> ListLikedQuizzes { get; }
 	}
 }

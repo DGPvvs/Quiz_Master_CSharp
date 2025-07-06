@@ -40,7 +40,7 @@
 
 				if (id == 0)
 				{
-					string msg = $"{messageVec[1]} | sent By {messageVec[3]}	quiz id {messageVec[2]} by {messageVec[4]} | reason {messageVec[5]}";
+					string msg = $"{messageVec[1]} | sent By {messageVec[3]}	quiz id {messageVec[2]} by {messageVec[4]} | reason: {messageVec[5]}";
 					game.Writer.WriteLine(msg);
 				}
 			}

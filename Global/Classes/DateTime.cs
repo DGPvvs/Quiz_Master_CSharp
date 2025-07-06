@@ -6,8 +6,8 @@
 		{
 			get
 			{
-				DateTime dt = new DateTime();
-				return dt.Date.ToString();
+				DateTime dt = DateTime.Now;
+				return dt.Date.ToString("dd/MM/yyyy");
 			}
 		}
     }

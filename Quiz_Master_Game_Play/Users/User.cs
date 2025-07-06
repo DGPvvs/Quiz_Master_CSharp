@@ -44,7 +44,7 @@
 			protected set => this.isHasLogin = value;
 		}
 
-		protected uint Password
+		public uint Password
 		{
 			get => this.password;
 			set => this.password = value;
@@ -143,6 +143,22 @@
 		public Message Message => this.message;
 
 		public Quiz Quiz => this.quiz;
+
+		public virtual uint NumberCreatedQuizzes => 0;
+
+		public virtual uint NumberSolvedTestQuizzes => 0;
+
+		public virtual uint NumberSolvedNormalQuizzes => 0;
+
+		public virtual List<string> ListFinishedChallenges => null!;
+
+		public virtual List<uint> ListLikedQuizzes => null!;		
+
+		public virtual uint NumberLikedQuizzes
+		{
+			get => 0;
+			set => throw new NotImplementedException();
+		}
 
 		public uint Hash(string str)
 		{

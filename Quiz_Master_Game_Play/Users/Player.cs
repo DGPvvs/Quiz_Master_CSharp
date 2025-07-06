@@ -6,14 +6,11 @@
 	using Common.Enums;
 	using Common.IO.Contract;
 	using Quiz_Master_Game_Play.Game.Contract;
+	using Quiz_Master_Game_Play.Questions;
 	using Quiz_Master_Game_Play.Questions.Contract;
 	using Quiz_Master_Game_Play.QuizClass;
-	using static System.Runtime.InteropServices.JavaScript.JSType;
-	using System.Numerics;
 	using System.Text;
-
 	using static Common.Constants.GlobalConstants;
-	using Quiz_Master_Game_Play.Questions;
 
 	public class Player : User
 	{
@@ -59,16 +56,30 @@
 
 		public List<string> ListCreatedQuizzes => this.listCreatedQuizzes;
 
-		public List<uint> ListLikedQuizzes => this.listLikedQuizzes;
+		public override List<uint> ListLikedQuizzes => this.listLikedQuizzes;
 		
 		public List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes;
 
-        private void Init()
+		public override List<string> ListFinishedChallenges => this.listFinishedChallenges;
+
+		public override uint NumberCreatedQuizzes => this.numberCreatedQuizzes;
+        
+		public override uint NumberSolvedTestQuizzes => this.numberSolvedTestQuizzes;
+
+		public override uint NumberSolvedNormalQuizzes => this.numberSolvedNormalQuizzes;
+		
+		public override uint NumberLikedQuizzes
+		{
+			get => this.numberLikedQuizzes;
+			set => this.numberLikedQuizzes = value;
+		}
+
+		private void Init()
 		{
 			this.listCreatedQuizzes = new List<string>();
 			this.listLikedQuizzes = new List<uint>();
 			this.listFavoriteQuizzes = new List<uint>();
-			this.listFinishedChallenges = new List<string>(); ;
+			this.listFinishedChallenges = new List<string>();
 		}
 
 		public uint PointsForLevel()

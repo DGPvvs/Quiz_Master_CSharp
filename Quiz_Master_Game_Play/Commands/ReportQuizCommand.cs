@@ -1,17 +1,18 @@
 ﻿namespace Quiz_Master_Game_Play.Commands
 {
+	using Common.Classes;
 	using Common.Constants;
 	using Common.Enums;
 	using Quiz_Master_Game_Play.Game.Contract;
 	using Quiz_Master_Game_Play.Users;
 
-	using static Common.Classes.Date;
-
 	public class ReportQuizCommand : Command
 	{
 		private string? reason;
+
 		public ReportQuizCommand(string commandString) : base(commandString)
 		{
+			this.reason = null;
 		}
 
 		public override bool CanExecute(IGame game)
@@ -80,7 +81,7 @@
 
 			string separator = GlobalConstants.MESSAGE_ELEMENT_SEPARATOR;
 
-			string newMessageString = $"0{separator}{DateTime.Now.Date.ToString()}{separator}{quizId}{separator}{sendedUserName}{separator}{ByUserName}{separator}{this.reason}";
+			string newMessageString = $"0{separator}{Date.DateNow}{separator}{quizId}{separator}{sendedUserName}{separator}{ByUserName}{separator}{this.reason}";
 
 			//UserId = 0|date|quizId|SendUserName|ByUserName|reason - Message toAdmin
 

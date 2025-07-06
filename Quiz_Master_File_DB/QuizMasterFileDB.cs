@@ -30,6 +30,12 @@
 				, new ViewReportsCommand(GlobalConstants.VIEW_REPORTS)
 				, new QuizzesCommand(GlobalConstants.QUIZZES)
 				, new ReportQuizCommand(GlobalConstants.REPORT_QUIZ)
+				, new RejectQuizCommand(GlobalConstants.REJECT_QUIZ)
+				, new RemoveQuizCommand(GlobalConstants.REMOVE_QUIZ)
+				, new EditProfileCommand(GlobalConstants.EDIT_PROFILE)
+				, new ViewChalleengesCommand(GlobalConstants.VIEW_CHALLEENGES)
+				, new ViewFinishedChalleengesCommand(GlobalConstants.VIEW_FINISHED_CHALLEENGES)
+				, new MessageCommand(GlobalConstants.MESSAGES)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);
