@@ -36,6 +36,8 @@
 				, new ViewChalleengesCommand(GlobalConstants.VIEW_CHALLEENGES)
 				, new ViewFinishedChalleengesCommand(GlobalConstants.VIEW_FINISHED_CHALLEENGES)
 				, new MessageCommand(GlobalConstants.MESSAGES)
+				, new LikeQuizCommand(GlobalConstants.LIKE_QUIZ)
+				, new UnlikeQuizCommand(GlobalConstants.UNLIKE_QUIZ)
 			};
 
 			IGame game = new Game(writer, reader, provider, commands);
