@@ -114,9 +114,6 @@
 			string configString = string.Empty;
 			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
 
-
-
-
 			List<string> v = configString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			this.MaxUserId = uint.Parse(v[0]);

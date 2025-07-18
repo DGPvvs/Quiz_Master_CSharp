@@ -55,14 +55,24 @@
 
 		public uint NumberCreatedQuizzes { get; }
 
-		public uint NumberSolvedTestQuizzes { get; }
+		public uint NumberSolvedTestQuizzes { get; set; }
 		
-		public uint NumberSolvedNormalQuizzes { get; }
+		public uint NumberSolvedNormalQuizzes { get; set; }
 		
 		public uint NumberLikedQuizzes { get; set; }
+
+		public uint NumberFavoriteQuizzes { get; set; }
 
 		public List<string> ListFinishedChallenges { get; }
 
 		public List<uint> ListLikedQuizzes { get; }
+
+		public List<uint> ListFavoriteQuizzes { get; }
+
+		public uint[] GetOrder(bool isShuffle, uint numberOfQuestions);
+
+		public void AddPoints(uint point);
+
+		public void AddQuizChallenge(ChallengerOptions co);
 	}
 }

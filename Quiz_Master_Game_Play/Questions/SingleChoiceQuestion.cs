@@ -20,6 +20,7 @@
 			: base(writer, reader, description, correctAnswer, points, isTest, questionsCount)
 		{
 			this.Qt = QuestionType.SC;
+			this.questions = new List<string>();
 		}
 
 		public List<string> Questions => this.questions;

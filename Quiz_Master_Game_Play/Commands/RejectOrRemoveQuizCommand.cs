@@ -22,7 +22,7 @@
 			{
 				if (game.User.GenerateReason(game.Cmd, ref this.reason))
 				{
-					return true;
+					return uint.TryParse(game.Cmd.Param1, out uint result);
 				}
 			}
 			return false;

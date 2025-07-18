@@ -58,20 +58,35 @@
 
 		public override List<uint> ListLikedQuizzes => this.listLikedQuizzes;
 		
-		public List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes;
+		public override List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes;
 
 		public override List<string> ListFinishedChallenges => this.listFinishedChallenges;
 
 		public override uint NumberCreatedQuizzes => this.numberCreatedQuizzes;
         
-		public override uint NumberSolvedTestQuizzes => this.numberSolvedTestQuizzes;
+		public override uint NumberSolvedTestQuizzes
+		{
+			get => this.numberSolvedTestQuizzes;
+			set => this.numberSolvedTestQuizzes = value;
+		}
 
-		public override uint NumberSolvedNormalQuizzes => this.numberSolvedNormalQuizzes;
-		
+		public override uint NumberSolvedNormalQuizzes
+		{
+			get => this.numberSolvedNormalQuizzes;
+			set => this.numberSolvedNormalQuizzes = value;
+		}
+
+
 		public override uint NumberLikedQuizzes
 		{
 			get => this.numberLikedQuizzes;
 			set => this.numberLikedQuizzes = value;
+		}
+
+		public override uint NumberFavoriteQuizzes
+		{
+			get => this.numberFavoriteQuizzes;
+			set => this.numberFavoriteQuizzes = value;
 		}
 
 		private void Init()
@@ -269,7 +284,7 @@
 
 		}
 
-		public void AddQuizChallenge(ChallengerOptions co)
+		public override void AddQuizChallenge(ChallengerOptions co)
 		{
 			uint point = 0;
 
@@ -337,7 +352,7 @@
 			this.AddPoints(point);
 		}
 
-		public void AddPoints(uint point)
+		public override void AddPoints(uint point)
 		{
 			this.points += point;
 
@@ -603,5 +618,34 @@
 
 			return false;
 		}
+
+		public override uint[] GetOrder(bool isShuffle, uint numberOfQuestions)
+		{
+			uint[] arr = new uint[numberOfQuestions];
+			for (int i = 0; i < numberOfQuestions; i++)
+			{
+				arr[i] = (uint)i;
+			}
+
+			if (!isShuffle)
+			{
+				return arr;
+			}
+
+			Random rand = new Random();
+			uint questionSize = numberOfQuestions;
+
+			uint[] arr1 = new uint[numberOfQuestions];
+
+			for (int i = 0; i < numberOfQuestions; i++)
+			{
+				int randomIndex = rand.Next((int)questionSize);
+
+				arr1[i] = arr[randomIndex];
+				arr[randomIndex] = arr[--questionSize];
+			}
+
+			return arr1;
+		}		
 	}
 }

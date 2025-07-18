@@ -8,13 +8,11 @@
 	using System.Text;
 
 	public class QuizzesCommand : Command
-	{
-		private IGame game;
+	{		
 		private string userName;
 
 		public QuizzesCommand(string commandString) : base(commandString)
 		{
-			this.game = null!;
 			this.userName = string.Empty;
 		}
 

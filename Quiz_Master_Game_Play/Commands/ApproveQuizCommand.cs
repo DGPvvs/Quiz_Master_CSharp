@@ -15,7 +15,7 @@
 		{
 			if ((game.User is Admin) && (game.Cmd.Command == this.CommandString) && (game.Cmd.ParamRange == 2))
 			{
-				return true;
+				return uint.TryParse(game.Cmd.Param1, out uint result);
 			}
 
 			return false;

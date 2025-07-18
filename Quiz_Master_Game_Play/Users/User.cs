@@ -146,9 +146,17 @@
 
 		public virtual uint NumberCreatedQuizzes => 0;
 
-		public virtual uint NumberSolvedTestQuizzes => 0;
+		public virtual uint NumberSolvedTestQuizzes
+		{
+			get => 0;
+			set => throw new NotImplementedException();
+		}
 
-		public virtual uint NumberSolvedNormalQuizzes => 0;
+		public virtual uint NumberSolvedNormalQuizzes
+		{
+			get => 0;
+			set => throw new NotImplementedException();
+		}
 
 		public virtual List<string> ListFinishedChallenges => null!;
 
@@ -159,6 +167,20 @@
 			get => 0;
 			set => throw new NotImplementedException();
 		}
+
+		public virtual uint NumberFavoriteQuizzes
+		{
+			get => 0;
+			set => throw new NotImplementedException();
+		}
+
+		public virtual List<uint> ListFavoriteQuizzes => null!;
+
+		public virtual void AddQuizChallenge(ChallengerOptions co)
+		{
+			return;
+		}
+
 
 		public uint Hash(string str)
 		{
@@ -254,6 +276,13 @@
 			{
 				this.Writer.WriteLine(command);
 			}
+		}
+
+		public virtual uint[] GetOrder(bool isShuffle, uint numberOfQuestions) => null!;
+
+		public virtual void AddPoints(uint point)
+		{
+			return;
 		}
 	}
 }
