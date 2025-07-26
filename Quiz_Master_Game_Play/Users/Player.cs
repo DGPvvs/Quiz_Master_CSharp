@@ -26,15 +26,15 @@
 
 		private IGame game;
 
-		private List<string> listCreatedQuizzes;
-		private List<uint> listLikedQuizzes;
-		private List<uint> listFavoriteQuizzes;
-		private List<string> listFinishedChallenges;
+		private List<string>? listCreatedQuizzes;
+		private List<uint>? listLikedQuizzes;
+		private List<uint>? listFavoriteQuizzes;
+		private List<string>? listFinishedChallenges;
 
 		public Player(IWriter writer, IReader reader, IBaseProvider provider, UserStruct us, UserOptions uo)
 			: base(writer, reader, provider)
 		{
-			this.game = null;
+			this.game = null!;
 			this.Init();
 
 			List<string> v = new List<string>();
@@ -54,13 +54,13 @@
 
 		public uint Points => this.points;
 
-		public List<string> ListCreatedQuizzes => this.listCreatedQuizzes;
+		public List<string> ListCreatedQuizzes => this.listCreatedQuizzes!;
 
-		public override List<uint> ListLikedQuizzes => this.listLikedQuizzes;
+		public override List<uint> ListLikedQuizzes => this.listLikedQuizzes!;
 		
-		public override List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes;
+		public override List<uint> ListFavoriteQuizzes => this.listFavoriteQuizzes!;
 
-		public override List<string> ListFinishedChallenges => this.listFinishedChallenges;
+		public override List<string> ListFinishedChallenges => this.listFinishedChallenges!;
 
 		public override uint NumberCreatedQuizzes => this.numberCreatedQuizzes;
         
@@ -129,10 +129,10 @@
 			StringBuilder sb = new StringBuilder();
 			sb.Append(base.BuildUserData());
 
-			this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes.Count;
-			this.numberLikedQuizzes = (uint)this.listLikedQuizzes.Count;
-			this.numberFavoriteQuizzes = (uint)this.listFavoriteQuizzes.Count;
-			this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
+			this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes!.Count;
+			this.numberLikedQuizzes = (uint)this.listLikedQuizzes!.Count;
+			this.numberFavoriteQuizzes = (uint)this.listFavoriteQuizzes!.Count;
+			this.numberFinishedChallenges = (uint)this.listFinishedChallenges!.Count;
 
 			sb.AppendLine(this.level.ToString());
 			sb.AppendLine(this.points.ToString());
@@ -200,28 +200,28 @@
 
 			for (; i < j + this.numberCreatedQuizzes; ++i)
 			{
-				this.listCreatedQuizzes.Add(v[i]);
+				this.listCreatedQuizzes!.Add(v[i]);
 			}
 
 			j = i;
 
 			for (; i < j + this.numberLikedQuizzes; ++i)
 			{
-				this.listLikedQuizzes.Add(uint.Parse(v[i]));
+				this.listLikedQuizzes!.Add(uint.Parse(v[i]));
 			}
 
 			j = i;
 
 			for (; i < j + this.numberFavoriteQuizzes; ++i)
 			{
-				this.listFavoriteQuizzes.Add(uint.Parse(v[i]));
+				this.listFavoriteQuizzes!.Add(uint.Parse(v[i]));
 			}
 
 			j = i;
 
 			for (; i < j + this.numberFinishedChallenges; ++i)
 			{
-				this.listFinishedChallenges.Add(v[i]);
+				this.listFinishedChallenges!.Add(v[i]);
 			}
 
 			List<string> quizzesVec =  this.Quiz
@@ -243,7 +243,7 @@
 				{
 					string createdQuiz = $"{qiDTO.Id.ToString()}{CREATED_QUIZ_SEPARATOR_STRING}{qiDTO.QuizName}";
 
-					this.listCreatedQuizzes.Add(createdQuiz);
+					this.listCreatedQuizzes!.Add(createdQuiz);
 					this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes.Count;
 
 					this.AddQuizChallenge(ChallengerOptions.CreateChallenger);
@@ -290,7 +290,7 @@
 
 			if (co == ChallengerOptions.CreateChallenger)
 			{
-				int createdQuizCount = this.listCreatedQuizzes.Count;
+				int createdQuizCount = this.listCreatedQuizzes!.Count;
 
 				bool isChalleeng = (createdQuizCount < 31) && (createdQuizCount % 5 == 0);
 
@@ -304,7 +304,7 @@
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {createdQuizCount} create quizzes";
 
-					this.listFinishedChallenges.Add(finishedChaleng);
+					this.listFinishedChallenges!.Add(finishedChaleng);
 					this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
 					this.numberCreatedQuizzesChallengers++;
 				}
@@ -325,7 +325,7 @@
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Complete {normalQuizCount} quizzes in normal mode";
 
-					this.listFinishedChallenges.Add(finishedChaleng);
+					this.listFinishedChallenges!.Add(finishedChaleng);
 					this.numberFinishedChallenges = (uint)this.listFinishedChallenges.Count;
 				}
 			}
@@ -345,7 +345,7 @@
 
 					string finishedChaleng = $"{Common.Classes.Date.DateNow}{MESSAGE_ELEMENT_SEPARATOR}Commplete {testQuizCount} quizzes in test mode";
 
-					this.listFinishedChallenges.Add(finishedChaleng);
+					this.listFinishedChallenges!.Add(finishedChaleng);
 				}
 			}
 
@@ -395,7 +395,7 @@
 
 				if (id == qiDTO.Id && qiDTO.QuizStatus == QuizStatus.ApprovedQuiz)
 				{
-					quizString = qiDTO.QuizFileName;
+					quizString = qiDTO.QuizFileName!;
 					this.Provider.Action(ref quizString, ProviderOptions.QuizLoad);
 					break;
 				}
@@ -585,7 +585,7 @@
 
 		public bool ContainCreatedQuizzes(uint quizId)
 		{
-			for (int i = 0; i < this.listCreatedQuizzes.Count; i++)
+			for (int i = 0; i < this.listCreatedQuizzes!.Count; i++)
 			{
 				List<string> v = this
 					.listCreatedQuizzes[i]
@@ -603,7 +603,7 @@
 
 		public bool ContainLikedQuizzes(uint quizId)
 		{
-			for (int i = 0; i < this.listCreatedQuizzes.Count; i++)
+			for (int i = 0; i < this.listCreatedQuizzes!.Count; i++)
 			{
 				List<string> v = this
 					.listCreatedQuizzes[i]

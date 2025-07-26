@@ -1,6 +1,5 @@
 ﻿namespace Quiz_Master_Game_Play.Questions
 {
-	using Common.Constants;
 	using Common.Enums;
 	using Common.IO.Contract;
 	using Quiz_Master_Game_Play.Questions.Contract;
@@ -8,7 +7,7 @@
 
 	public class SingleChoiceQuestion : Question, IQuestion
 	{
-		private List<string> questions;
+		private List<string>? questions;
 
 		public SingleChoiceQuestion(IWriter writer, IReader reader, string description, string correctAnswer, uint points, bool isTest)
 			: base(writer, reader, description, correctAnswer, points, isTest, 4)
@@ -23,7 +22,7 @@
 			this.questions = new List<string>();
 		}
 
-		public List<string> Questions => this.questions;
+		public List<string> Questions => this.questions!;
 
 		public uint Action()
 		{
@@ -49,7 +48,7 @@
 
 			for (int i = 0; i < quest.Count; ++i)
 			{
-				this.questions.Add(quest[i]);
+				this.questions!.Add(quest[i]);
 			}
 		}
 
@@ -61,7 +60,7 @@
 			sb.AppendLine(this.Description);
 			sb.AppendLine(this.CorrectAnswer);
 			sb.AppendLine(this.Points.ToString());
-			sb.AppendLine(this.questions.Count.ToString());
+			sb.AppendLine(this.questions!.Count.ToString());
 
 			for (int i = 0; i < this.questions.Count; ++i)
 			{
@@ -75,7 +74,7 @@
 		{
 			this.Writer.WriteLine($"{this.Description}\t({this.Points} points)");
 
-			for (int i = 0; i < this.questions.Count; ++i)
+			for (int i = 0; i < this.questions!.Count; ++i)
 			{
 				char ch = (char)((int)'A' + i);
 				this.Writer.WriteLine($"{ch}) {this.questions[i]}");

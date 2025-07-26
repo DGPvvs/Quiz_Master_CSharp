@@ -5,17 +5,17 @@
 
 	public class Invoker
 	{
-		private readonly List<ICommand> commands;
+		private readonly HashSet<ICommand> commands;
 
 		public Invoker(IEnumerable<ICommand> availableCommands)
 		{
-			this.commands = availableCommands.ToList();
+			this.commands = availableCommands.ToHashSet();
 		}
 
 		public bool Handle(IGame game)
 		{
-			var cmdStr = game.Cmd.Command;
-			var cmd = this.commands.FirstOrDefault(c => c.CommandString == cmdStr);
+			string? cmdStr = game.Cmd.Command;
+			ICommand? cmd = this.commands.FirstOrDefault(c => c.CommandString == cmdStr);
 			if (cmd == null)
 			{
 				game.Writer.WriteLine("Unknown command.");

@@ -13,10 +13,10 @@
 	public class User : IUser
 	{
 		private uint id;
-		private string firstName;
-		private string lastName;
-		private string userName;
-		private string fileName;
+		private string? firstName;
+		private string? lastName;
+		private string? userName;
+		private string? fileName;
 		private uint password;
 		private bool isHasLogin;
 		private IWriter writer;
@@ -208,7 +208,7 @@
 			{
 				List<string> v = usersVec[userIndex].Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-				if (exsist && this.Hash(us.Password) != uint.Parse(v[1]))
+				if (exsist && this.Hash(us.Password!) != uint.Parse(v[1]))
 				{
 					return UserOptions.WrongPassword;
 				}

@@ -19,7 +19,7 @@
 		private IWriter writer;
 		private IBaseProvider provider;
 		private Invoker invoker;
-		private CommandStruct cmd;
+		private CommandStruct? cmd;
 
 		private uint maxUserId;
 		private uint maxQuizId;
@@ -63,7 +63,7 @@
 
 		public Invoker Invoker => this.invoker;
 
-		public CommandStruct Cmd => this.cmd;
+		public CommandStruct Cmd => this.cmd!;
 
 		public void Exit()
 		{
