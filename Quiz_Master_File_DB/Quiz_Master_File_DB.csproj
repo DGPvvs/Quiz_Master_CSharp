@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\File_DB\File_DB.csproj" />
     <ProjectReference Include="..\Global\Common.csproj" />
     <ProjectReference Include="..\Quiz_Master_Game_Play\Quiz_Master_Game_Play.csproj" />
   </ItemGroup>
