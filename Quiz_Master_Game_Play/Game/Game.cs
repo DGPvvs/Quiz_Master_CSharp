@@ -115,9 +115,11 @@
 			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
 
 			List<string> v = configString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-			this.MaxUserId = uint.Parse(v[0]);
-			this.MaxQuizId = uint.Parse(v[1]);
+			if (v.Count > 0)
+			{
+				this.MaxUserId = uint.Parse(v[0]);
+				this.MaxQuizId = uint.Parse(v[1]);
+			}			
 		}
 
 		private void GameLoop()
