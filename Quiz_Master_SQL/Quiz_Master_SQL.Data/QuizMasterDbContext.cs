@@ -49,11 +49,17 @@
 			//	modelBuilder.Entity<GameSession>().ToTable("GameSessions");
 		}
 		public DbSet<ConfigTableDB> ConfigTablesDB { get; set; }
+
 		public DbSet<UserDB> UsersDB { get; set; }
+
 		public DbSet<FinishedChallengeDB> FinishedChallengesDB { get; set; }
+
 		public DbSet<LikedQuizzeDB> LikedQuizzesDB { get; set; }
+
 		public DbSet<QuizDB> QuizzesDB { get; set; }
 
 		public DbSet<FavoritedQuizzeDB> FavoritedQuizzes { get; set; }
+
+		public DbSet<MessagesDB> Messages { get; set; }
 	}
 }

@@ -12,6 +12,7 @@
 			this.FinishedChallenges = new HashSet<FinishedChallengeDB>();
 			this.LikedQuizzes = new HashSet<LikedQuizzeDB>();
 			this.FavoritedQuizzes = new HashSet<FavoritedQuizzeDB>();
+			this.Messages = new HashSet<MessagesDB>();
 		}
 
 		[Key]
@@ -63,12 +64,8 @@
 		public virtual ICollection<LikedQuizzeDB> LikedQuizzes { get; set; }
 
 		public virtual ICollection<FavoritedQuizzeDB> FavoritedQuizzes { get; set; }
-
 		
-
-
-
-
+		public virtual ICollection<MessagesDB> Messages { get; set; }
 
 		/*0 <firstName>
 1 <lastName>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 
@@ -11,9 +12,11 @@ using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 namespace Quiz_Master_SQL.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    partial class QuizMasterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250807173228_Init5")]
+    partial class Init5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
