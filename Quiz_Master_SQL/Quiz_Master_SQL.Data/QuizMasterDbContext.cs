@@ -1,7 +1,6 @@
 ﻿namespace Quiz_Master_SQL.Quiz_Master_SQL.Data
 {
 	using Common.Classes;
-	using File_DB.Data.Models;
 	using global::Quiz_Master_SQL.Data.Models;
 	using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +30,18 @@
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<ConfigTableDB>(e => e.HasNoKey());
+
+			modelBuilder.Entity<LikedQuizzeDB>(e => e.HasKey(lq =>new { lq.QuizId, lq.UserId }));
+			modelBuilder.Entity<LikedQuizzeDB>(e => e.HasOne(x=>x.QuizDBs).WithMany(b => b.LikedQuizzes).OnDelete(DeleteBehavior.NoAction));
+			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasKey(fq => new { fq.QuizId, fq.UserId }));
+			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasOne(x => x.Quiz).WithMany(b => b.FavoritedQuizzes).OnDelete(DeleteBehavior.NoAction));
+
+			//modelBuilder.Entity<LikedQuizzeDB>(
+			//	kasO
+			//	)
+			//	.HasOne(x => x.. .Instalation)
+			//	.WithMany(b => b.ApplicationUserPlantInstalations)
+			//	.OnDelete(DeleteBehavior.NoAction);
 			//	modelBuilder.Entity<Quiz>().ToTable("Quizzes");
 			//	modelBuilder.Entity<Question>().ToTable("Questions");
 			//	modelBuilder.Entity<Answer>().ToTable("Answers");
@@ -39,8 +50,10 @@
 		}
 		public DbSet<ConfigTableDB> ConfigTablesDB { get; set; }
 		public DbSet<UserDB> UsersDB { get; set; }
-		public DbSet<UserDataDB> UsersDataDB { get; set; }
-		//public DbSet<Answer> Answers { get; set; }
-		//public DbSet<GameSession> GameSessions { get; set; }
+		public DbSet<FinishedChallengeDB> FinishedChallengesDB { get; set; }
+		public DbSet<LikedQuizzeDB> LikedQuizzesDB { get; set; }
+		public DbSet<QuizDB> QuizzesDB { get; set; }
+
+		public DbSet<FavoritedQuizzeDB> FavoritedQuizzes { get; set; }
 	}
 }
