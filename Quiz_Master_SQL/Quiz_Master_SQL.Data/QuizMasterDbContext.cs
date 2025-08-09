@@ -32,16 +32,58 @@
 			modelBuilder.Entity<ConfigTableDB>(e => e.HasNoKey());
 
 			modelBuilder.Entity<LikedQuizzeDB>(e => e.HasKey(lq =>new { lq.QuizId, lq.UserId }));
-			modelBuilder.Entity<LikedQuizzeDB>(e => e.HasOne(x=>x.QuizDBs).WithMany(b => b.LikedQuizzes).OnDelete(DeleteBehavior.NoAction));
-			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasKey(fq => new { fq.QuizId, fq.UserId }));
-			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasOne(x => x.Quiz).WithMany(b => b.FavoritedQuizzes).OnDelete(DeleteBehavior.NoAction));
 
-			//modelBuilder.Entity<LikedQuizzeDB>(
-			//	kasO
-			//	)
-			//	.HasOne(x => x.. .Instalation)
-			//	.WithMany(b => b.ApplicationUserPlantInstalations)
-			//	.OnDelete(DeleteBehavior.NoAction);
+			modelBuilder.Entity<LikedQuizzeDB>(
+				e => e
+					.HasOne(x=>x.QuizDBs)
+					.WithMany(b => b.LikedQuizzes)
+					.OnDelete(DeleteBehavior.NoAction
+					));
+
+			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasKey(fq => new { fq.QuizId, fq.UserId }));
+
+			modelBuilder.Entity<FavoritedQuizzeDB>(
+				e => e
+					.HasOne(x => x.Quiz)
+					.WithMany(b => b.FavoritedQuizzes)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
+			modelBuilder.Entity<MultiplyAnswersDB>(
+				e => e
+					.HasOne(x => x.MultipleChoiceQuestion)
+					.WithMany(b => b.MultiplyAnswers)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
+			modelBuilder.Entity<MultiplyAnswersDB>(
+				e => e
+					.HasOne(x => x.MultipleChoiceQuestionCorrectAnswer)
+					.WithMany(b => b.MultiplyCorrectAnswers)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
+			modelBuilder.Entity<MultiplyAnswersDB>(
+				e => e
+					.HasOne(x => x.MPQCorrectAnswer)
+					.WithMany(b => b.MatchingPairsCorrectAnswers)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
+			modelBuilder.Entity<MultiplyAnswersDB>(
+				e => e
+					.HasOne(x => x.MPQFirstAnswer)
+					.WithMany(b => b.MatchingPairsFirstAnswers)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
+			modelBuilder.Entity<MultiplyAnswersDB>(
+				e => e
+					.HasOne(x => x.MPQSecondAnswer)
+					.WithMany(b => b.MatchingPairsSecondAnswers)
+					.OnDelete(DeleteBehavior.NoAction)
+					);
+
 			//	modelBuilder.Entity<Quiz>().ToTable("Quizzes");
 			//	modelBuilder.Entity<Question>().ToTable("Questions");
 			//	modelBuilder.Entity<Answer>().ToTable("Answers");
@@ -61,5 +103,13 @@
 		public DbSet<FavoritedQuizzeDB> FavoritedQuizzes { get; set; }
 
 		public DbSet<MessagesDB> Messages { get; set; }
+		
+		public DbSet<MultiplyAnswersDB> MultiplyAnswers { get; set; }
+		
+		public DbSet<TrueOrFalseQuestionDB> TrueOrFalseQuestions { get; set; }
+		
+		public DbSet<SingleChoiceQuestionDB> SingleChoiceQuestions { get; set; }
+		
+		public DbSet<ShortAnswerQuestionDB> ShortAnswerQuestions { get; set; }
 	}
 }

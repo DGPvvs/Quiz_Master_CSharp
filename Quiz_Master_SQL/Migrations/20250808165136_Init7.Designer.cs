@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 
@@ -11,9 +12,11 @@ using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 namespace Quiz_Master_SQL.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    partial class QuizMasterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250808165136_Init7")]
+    partial class Init7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,32 +86,6 @@ namespace Quiz_Master_SQL.Migrations
                     b.ToTable("LikedQuizzesDB");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Num")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Point")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("MatchingPairsQuestionDB");
-                });
-
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MessagesDB", b =>
                 {
                     b.Property<Guid>("Id")
@@ -129,32 +106,6 @@ namespace Quiz_Master_SQL.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MultipleChoiceQuestionDB", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Num")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Point")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("MultipleChoiceQuestionDB");
-                });
-
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MultiplyAnswersDB", b =>
                 {
                     b.Property<Guid>("Id")
@@ -165,35 +116,10 @@ namespace Quiz_Master_SQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("MPQCorrectAnswerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MPQFirstAnswerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MPQSecondAnswerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MultipleChoiceQuestionCorrectAnswerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MultipleChoiceQuestionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("SingleChoiceQuestionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MPQCorrectAnswerId");
-
-                    b.HasIndex("MPQFirstAnswerId");
-
-                    b.HasIndex("MPQSecondAnswerId");
-
-                    b.HasIndex("MultipleChoiceQuestionCorrectAnswerId");
-
-                    b.HasIndex("MultipleChoiceQuestionId");
 
                     b.HasIndex("SingleChoiceQuestionId");
 
@@ -229,7 +155,7 @@ namespace Quiz_Master_SQL.Migrations
                     b.ToTable("QuizzesDB");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.ShortAnswerQuestionDB", b =>
+            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.TrueOrFalseQuestionDB", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,60 +169,10 @@ namespace Quiz_Master_SQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Num")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Point")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("ShortAnswerQuestions");
-                });
-
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Num")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Point")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("SingleChoiceQuestions");
-                });
-
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.TrueOrFalseQuestionDB", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Answer")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(34)
+                        .HasColumnType("nvarchar(34)");
 
                     b.Property<long>("Num")
                         .HasColumnType("bigint");
@@ -312,6 +188,10 @@ namespace Quiz_Master_SQL.Migrations
                     b.HasIndex("QuizId");
 
                     b.ToTable("TrueOrFalseQuestions");
+
+                    b.HasDiscriminator().HasValue("TrueOrFalseQuestionDB");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.UserDB", b =>
@@ -376,6 +256,18 @@ namespace Quiz_Master_SQL.Migrations
                     b.ToTable("UsersDB");
                 });
 
+            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
+                {
+                    b.HasBaseType("Quiz_Master_SQL.Data.Models.TrueOrFalseQuestionDB");
+
+                    b.Property<Guid?>("QuizDBId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("QuizDBId");
+
+                    b.HasDiscriminator().HasValue("SingleChoiceQuestionDB");
+                });
+
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.FavoritedQuizzeDB", b =>
                 {
                     b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
@@ -425,17 +317,6 @@ namespace Quiz_Master_SQL.Migrations
                     b.Navigation("UserDBs");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", b =>
-                {
-                    b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MessagesDB", b =>
                 {
                     b.HasOne("Quiz_Master_SQL.Data.Models.UserDB", "UserDB")
@@ -447,64 +328,13 @@ namespace Quiz_Master_SQL.Migrations
                     b.Navigation("UserDB");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MultipleChoiceQuestionDB", b =>
-                {
-                    b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MultiplyAnswersDB", b =>
                 {
-                    b.HasOne("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", "MPQCorrectAnswer")
-                        .WithMany("MatchingPairsCorrectAnswers")
-                        .HasForeignKey("MPQCorrectAnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", "MPQFirstAnswer")
-                        .WithMany("MatchingPairsFirstAnswers")
-                        .HasForeignKey("MPQFirstAnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", "MPQSecondAnswer")
-                        .WithMany("MatchingPairsSecondAnswers")
-                        .HasForeignKey("MPQSecondAnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Quiz_Master_SQL.Data.Models.MultipleChoiceQuestionDB", "MultipleChoiceQuestionCorrectAnswer")
-                        .WithMany("MultiplyCorrectAnswers")
-                        .HasForeignKey("MultipleChoiceQuestionCorrectAnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Quiz_Master_SQL.Data.Models.MultipleChoiceQuestionDB", "MultipleChoiceQuestion")
-                        .WithMany("MultiplyAnswers")
-                        .HasForeignKey("MultipleChoiceQuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", "SingleChoiceQuestion")
                         .WithMany("MultiplyAnswers")
                         .HasForeignKey("SingleChoiceQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("MPQCorrectAnswer");
-
-                    b.Navigation("MPQFirstAnswer");
-
-                    b.Navigation("MPQSecondAnswer");
-
-                    b.Navigation("MultipleChoiceQuestion");
-
-                    b.Navigation("MultipleChoiceQuestionCorrectAnswer");
 
                     b.Navigation("SingleChoiceQuestion");
                 });
@@ -520,28 +350,6 @@ namespace Quiz_Master_SQL.Migrations
                     b.Navigation("UserDb");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.ShortAnswerQuestionDB", b =>
-                {
-                    b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
-                        .WithMany("ShortAnswerQuestions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
-                {
-                    b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
-                        .WithMany("SingleChoiceQuestions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.TrueOrFalseQuestionDB", b =>
                 {
                     b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", "Quiz")
@@ -553,20 +361,11 @@ namespace Quiz_Master_SQL.Migrations
                     b.Navigation("Quiz");
                 });
 
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MatchingPairsQuestionDB", b =>
+            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
                 {
-                    b.Navigation("MatchingPairsCorrectAnswers");
-
-                    b.Navigation("MatchingPairsFirstAnswers");
-
-                    b.Navigation("MatchingPairsSecondAnswers");
-                });
-
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.MultipleChoiceQuestionDB", b =>
-                {
-                    b.Navigation("MultiplyAnswers");
-
-                    b.Navigation("MultiplyCorrectAnswers");
+                    b.HasOne("Quiz_Master_SQL.Data.Models.QuizDB", null)
+                        .WithMany("SingleChoiceQuestion")
+                        .HasForeignKey("QuizDBId");
                 });
 
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.QuizDB", b =>
@@ -575,16 +374,9 @@ namespace Quiz_Master_SQL.Migrations
 
                     b.Navigation("LikedQuizzes");
 
-                    b.Navigation("ShortAnswerQuestions");
-
-                    b.Navigation("SingleChoiceQuestions");
+                    b.Navigation("SingleChoiceQuestion");
 
                     b.Navigation("TrueOrFalseQuestions");
-                });
-
-            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
-                {
-                    b.Navigation("MultiplyAnswers");
                 });
 
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.UserDB", b =>
@@ -598,6 +390,11 @@ namespace Quiz_Master_SQL.Migrations
                     b.Navigation("LikedQuizzes");
 
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Quiz_Master_SQL.Data.Models.SingleChoiceQuestionDB", b =>
+                {
+                    b.Navigation("MultiplyAnswers");
                 });
 #pragma warning restore 612, 618
         }
