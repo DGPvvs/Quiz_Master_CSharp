@@ -12,6 +12,8 @@
 			this.LikedQuizzes = new HashSet<LikedQuizzeDB>();
 			this.FavoritedQuizzes = new HashSet<FavoritedQuizzeDB>();
 			this.TrueOrFalseQuestions = new HashSet<TrueOrFalseQuestionDB>();
+			this.SingleChoiceQuestions = new HashSet<SingleChoiceQuestionDB>();
+			this.ShortAnswerQuestions = new HashSet<ShortAnswerQuestionDB>();
 		}
 
 		[Key]

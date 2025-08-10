@@ -1,18 +1,30 @@
 ﻿namespace Quiz_Master_SQL.Quiz_Master_SQL.Data
 {
 	using Common.Classes;
+	using global::Quiz_Master_SQL.Data.Configuration.EntityConfiguration;
+	using global::Quiz_Master_SQL.Data.Configuration.EntitySeed;
 	using global::Quiz_Master_SQL.Data.Models;
 	using Microsoft.EntityFrameworkCore;
 
 	public class QuizMasterDbContext : DbContext
 	{
+		private bool isSeeded = false;
+
 		public QuizMasterDbContext()
 		{
 		}
 
-		public QuizMasterDbContext(DbContextOptions dbContextOptions)
-			: base(dbContextOptions)
+		public QuizMasterDbContext(bool isSeeded) : base()
 		{
+			this.isSeeded = isSeeded;
+		}
+
+		public QuizMasterDbContext(
+			DbContextOptions dbContextOptions
+			, bool isSeeded
+			) : base(dbContextOptions)
+		{
+			this.isSeeded = isSeeded;
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,68 +39,30 @@
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			//Debugger.Launch();
+			
+			modelBuilder.ApplyConfiguration(new LikedQuizzeDBConfiguration());
+			modelBuilder.ApplyConfiguration(new FavoritedQuizzeDBConfiguration());
+			modelBuilder.ApplyConfiguration(new MultiplyAnswersDBConfigure());
+
+			if (this.isSeeded)
+			{
+				// Зареждане на тестовите данни в базата
+				modelBuilder.ApplyConfiguration(new ConfigTableDBSeeder());
+				modelBuilder.ApplyConfiguration(new UserDBTableSeeder());
+
+
+				//modelBuilder.ApplyConfiguration(new TechnologicalPositionSeeder());
+				//modelBuilder.ApplyConfiguration(new WorkingShiftSeeder());
+				//modelBuilder.ApplyConfiguration(new RoleSeeder());
+				//modelBuilder.ApplyConfiguration(new ApplicationUserSeeder());
+				//modelBuilder.ApplyConfiguration(new UserRoleSeeder());
+				//Debugger.Launch();
+				//modelBuilder.ApplyConfiguration(new ChangedScheduleSeede());
+				//modelBuilder.ApplyConfiguration(new ApplicationUserPlantInstalationSeeder());
+			}
+
 			base.OnModelCreating(modelBuilder);
-
-			modelBuilder.Entity<ConfigTableDB>(e => e.HasNoKey());
-
-			modelBuilder.Entity<LikedQuizzeDB>(e => e.HasKey(lq =>new { lq.QuizId, lq.UserId }));
-
-			modelBuilder.Entity<LikedQuizzeDB>(
-				e => e
-					.HasOne(x=>x.QuizDBs)
-					.WithMany(b => b.LikedQuizzes)
-					.OnDelete(DeleteBehavior.NoAction
-					));
-
-			modelBuilder.Entity<FavoritedQuizzeDB>(e => e.HasKey(fq => new { fq.QuizId, fq.UserId }));
-
-			modelBuilder.Entity<FavoritedQuizzeDB>(
-				e => e
-					.HasOne(x => x.Quiz)
-					.WithMany(b => b.FavoritedQuizzes)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			modelBuilder.Entity<MultiplyAnswersDB>(
-				e => e
-					.HasOne(x => x.MultipleChoiceQuestion)
-					.WithMany(b => b.MultiplyAnswers)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			modelBuilder.Entity<MultiplyAnswersDB>(
-				e => e
-					.HasOne(x => x.MultipleChoiceQuestionCorrectAnswer)
-					.WithMany(b => b.MultiplyCorrectAnswers)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			modelBuilder.Entity<MultiplyAnswersDB>(
-				e => e
-					.HasOne(x => x.MPQCorrectAnswer)
-					.WithMany(b => b.MatchingPairsCorrectAnswers)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			modelBuilder.Entity<MultiplyAnswersDB>(
-				e => e
-					.HasOne(x => x.MPQFirstAnswer)
-					.WithMany(b => b.MatchingPairsFirstAnswers)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			modelBuilder.Entity<MultiplyAnswersDB>(
-				e => e
-					.HasOne(x => x.MPQSecondAnswer)
-					.WithMany(b => b.MatchingPairsSecondAnswers)
-					.OnDelete(DeleteBehavior.NoAction)
-					);
-
-			//	modelBuilder.Entity<Quiz>().ToTable("Quizzes");
-			//	modelBuilder.Entity<Question>().ToTable("Questions");
-			//	modelBuilder.Entity<Answer>().ToTable("Answers");
-			//	modelBuilder.Entity<User>().ToTable("Users");
-			//	modelBuilder.Entity<GameSession>().ToTable("GameSessions");
 		}
 		public DbSet<ConfigTableDB> ConfigTablesDB { get; set; }
 

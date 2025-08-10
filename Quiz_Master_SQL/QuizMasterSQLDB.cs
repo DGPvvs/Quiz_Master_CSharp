@@ -1,7 +1,13 @@
 ﻿namespace Quiz_Master_SQL
 {
+	using File_DB.BaseProvider;
+	using global::Quiz_Master_SQL.Data.Configuration.EntitySeed.SeedData;
 	using global::Quiz_Master_SQL.IO;
 	using global::Quiz_Master_SQL.Quiz_Master_SQL.Data;
+	using Quiz_Master_Game_Play.Commands;
+	using Quiz_Master_Game_Play.Commands.Contract;
+	using Quiz_Master_Game_Play.Game;
+	using Quiz_Master_Game_Play.Game.Contract;
 
 	internal class QuizMasterSQLDB
 	{
@@ -12,15 +18,20 @@
 
 			QuizMasterDbContext context = new QuizMasterDbContext();
 
+			//context.AddRange(new SeedsData().UserDBSeeder());
+			//context.SaveChanges();
 
-			//SQLBaseProvider provider = new SQLBaseProvider(context);
+			//QuizMasterDbContext context = new QuizMasterDbContext(true);
 
-			//HashSet<ICommand> commands = new SetCommands().Commands.ToHashSet();
 
-			//IGame game = new Game(writer, reader, provider, commands);
+			SQLBaseProvider provider = new SQLBaseProvider(context);
 
-			//game.Init();
-			//game.Run();
+			HashSet<ICommand> commands = new SetCommands().Commands.ToHashSet();
+
+			IGame game = new Game(writer, reader, provider, commands);
+
+			game.Init();
+			game.Run();
 
 			//try
 			//{

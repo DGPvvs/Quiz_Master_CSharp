@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 
@@ -11,9 +12,11 @@ using Quiz_Master_SQL.Quiz_Master_SQL.Data;
 namespace Quiz_Master_SQL.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    partial class QuizMasterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250810174721_Init13")]
+    partial class Init13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,14 @@ namespace Quiz_Master_SQL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ConfigTablesDB");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5ba9cd6e-1a8a-4c08-a9a3-bd195dc05a49"),
+                            MaxQuizId = 0L,
+                            MaxUserId = 10L
+                        });
                 });
 
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.FavoritedQuizzeDB", b =>
@@ -380,6 +391,108 @@ namespace Quiz_Master_SQL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UsersDB");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6f7b651d-0fba-4321-9f2d-4badb7e2ec81"),
+                            FirstName = "Admin",
+                            LastName = "One",
+                            Password = 708698343L,
+                            UserGameId = 1L,
+                            UserName = "admin1",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("f21cb56b-a1bd-4880-b186-03e781ae7157"),
+                            FirstName = "Admin",
+                            LastName = "Two",
+                            Password = 708698342L,
+                            UserGameId = 2L,
+                            UserName = "admin2",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("f4111ed6-c886-4d34-81cd-63d5fdfaf016"),
+                            FirstName = "Admin",
+                            LastName = "Three",
+                            Password = 708698337L,
+                            UserGameId = 3L,
+                            UserName = "admin3",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("3031f5e6-6845-419a-8ddf-abbc563e8dda"),
+                            FirstName = "Admin",
+                            LastName = "Four",
+                            Password = 708698336L,
+                            UserGameId = 4L,
+                            UserName = "admin4",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("9b781b62-bb61-4c3c-8997-6321d474cade"),
+                            FirstName = "Admin",
+                            LastName = "Five",
+                            Password = 708698339L,
+                            UserGameId = 5L,
+                            UserName = "admin5",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("9d5c7622-fd27-494f-85b8-bd8bb2cde748"),
+                            FirstName = "Admin",
+                            LastName = "Six",
+                            Password = 708698338L,
+                            UserGameId = 6L,
+                            UserName = "admin6",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("6723fd1c-8128-4b36-808d-1053137ac351"),
+                            FirstName = "Admin",
+                            LastName = "Seven",
+                            Password = 708698349L,
+                            UserGameId = 7L,
+                            UserName = "admin7",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("51594435-7d14-4084-9798-d4d2348f3cb9"),
+                            FirstName = "Admin",
+                            LastName = "Eight",
+                            Password = 708698348L,
+                            UserGameId = 8L,
+                            UserName = "admin8",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("0ac7744c-6d09-4287-8dd9-ae942b12f1b0"),
+                            FirstName = "Admin",
+                            LastName = "Nine",
+                            Password = 708698351L,
+                            UserGameId = 9L,
+                            UserName = "admin9",
+                            UserOptions = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("374a1961-cff2-44ee-9cc4-333698ad0d81"),
+                            FirstName = "Admin",
+                            LastName = "Ten",
+                            Password = 2021029294L,
+                            UserGameId = 10L,
+                            UserName = "admin10",
+                            UserOptions = 1
+                        });
                 });
 
             modelBuilder.Entity("Quiz_Master_SQL.Data.Models.FavoritedQuizzeDB", b =>
