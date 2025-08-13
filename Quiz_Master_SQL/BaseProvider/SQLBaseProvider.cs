@@ -36,6 +36,77 @@
 				string s = str;
 				str = this.UserDataLoad(s);
 			}
+			else if (options == ProviderOptions.NewUserSave)
+			{
+				str = this.AddNewUser(str, true);
+			}
+			else if (options == ProviderOptions.ConfigSave)
+			{				
+				this.SaveConfig(str);
+			}
+			else if (options == ProviderOptions.UserSave)
+			{
+				string s = str;
+				Console.WriteLine(s);
+				this.UpdateUser(s, false);
+			}
+		}
+
+		private void UpdateUser(string s, bool v)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void SaveConfig(string str)
+		{
+			List<uint> confData = str.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+				.Select(uint.Parse)
+				.ToList();
+			Task result = SaveConfigAsync(confData);
+		}
+
+		private async Task SaveConfigAsync(List<uint> confData)
+		{
+			ConfigTableDB? config = await this.context.ConfigTablesDB.FirstOrDefaultAsync();
+			config.MaxUserId = confData[0];
+			config.MaxQuizId = confData[1];
+			this.context.ConfigTablesDB.Update(config);
+			await this.context.SaveChangesAsync();
+		}
+
+		private string AddNewUser(string str, bool v)
+		{
+			string newUser = str
+				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+				.ToList()
+				.Last();
+			List<string> userData = newUser
+				.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.ToList();
+
+			Task<UserDB> result = AddNewUserToBase(userData);
+
+			string newUserId = result.Result.Id.ToString();
+
+			return newUserId; // Return the new user ID
+		}
+
+		private async Task<UserDB> AddNewUserToBase(List<string> userData)
+		{
+			UserDB newUser = new UserDB()
+			{
+				UserName = userData[0]
+				, Password = uint.Parse(userData[1])
+				, UserGameId = uint.Parse(userData[3])
+				, UserOptions = (UserOptions)Enum.Parse(typeof(UserOptions), userData[4])
+				, FirstName = string.Empty
+				, LastName = string.Empty
+			};
+
+			this.context.UsersDB.Add(newUser);
+			await this.context.SaveChangesAsync();
+
+			return newUser;
 		}
 
 		private string UserDataLoad(string s)
@@ -43,10 +114,7 @@
 			Guid id = Guid.Parse(s);
 			Task<UserDTO> result = LoadUserData(id);
 			var i = result.Result;
-			Console.WriteLine($"{i.UserName} {i.FirstName} {i.LastName} {i.UserGameId}");
-			Console.WriteLine();
-			;
-			throw new NotImplementedException();
+			return $"{result.Result.FirstName}{Environment.NewLine}{result.Result.LastName}";
 		}
 
 		private async Task<UserDTO> LoadUserData(Guid id)
@@ -55,6 +123,7 @@
 				.context
 				.UsersDB				
 				.Where(e => e.Id == id)
+				.AsNoTracking()
 				.Select(e => e.UserGameId)
 				.FirstOrDefaultAsync();
 
@@ -66,17 +135,17 @@
 				.context
 				.UsersDB
 				.Where(e => e.Id == id)
+				.AsNoTracking()
 				.Select(e => new UserDTO
 				{
-					Id = Guid.Parse(e.Id.ToString()!)
-					, UserName = e.UserName!
-					, Password = e.Password
-					, UserOptions = e.UserOptions
-					, UserGameId = e.UserGameId
-					, FirstName = e.FirstName!
+					FirstName = e.FirstName!
 					, LastName = e.LastName!
 				})
 				.FirstOrDefaultAsync();
+			}
+			else
+			{
+				throw new NotImplementedException();
 			}
 
 				//var user = await this
@@ -104,7 +173,7 @@
 				//})
 				//.FirstOrDefaultAsync();
 
-			return user ?? throw new InvalidOperationException("User not found or invalid UserGameId.");
+				return user ?? throw new InvalidOperationException("User not found or invalid UserGameId.");
 		}
 
 		private string FindUser(string s)
