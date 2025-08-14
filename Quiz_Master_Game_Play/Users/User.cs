@@ -231,7 +231,7 @@
 
 		public string AllUsers(string users)
 		{
-			this.provider.Action(ref users, ProviderOptions.UserFind);
+			this.provider.Action(ref users, this.Id, ProviderOptions.UserFind);
 			return users;
 		}
 
@@ -245,7 +245,7 @@
 			else
 			{
 				string s = us.FileName!;
-				this.provider.Action(ref s, ProviderOptions.UserLoad);
+				this.provider.Action(ref s, this.Id, ProviderOptions.UserLoad);
 
 				v = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -265,7 +265,7 @@
 
 		public virtual string BuildUserData() => $"{this.FileName}{GlobalConstants.FILENAME_TO_DATA_SEPARATOR}{this.firstName}{Environment.NewLine}{this.lastName}{Environment.NewLine}";
 
-		public virtual void SaveData()
+		public virtual void SaveData(uint id)
 		{
 			return;
 		}

@@ -5,6 +5,7 @@
 	using Common.Constants;
 	using Common.Enums;
 	using Common.IO.Contract;
+	using Quiz_Master_Game_Play.Game;
 	using Quiz_Master_Game_Play.Questions.Contract;
 	using Quiz_Master_Game_Play.Users;
 	using static Common.Constants.GlobalConstants;
@@ -98,7 +99,7 @@
 
 				allQuizzesString = $"{QUIZZES_FILE_NAME}{FILENAME_TO_DATA_SEPARATOR}{allQuizzesString}";
 
-				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
+				this.provider.Action(ref allQuizzesString, this.Id, ProviderOptions.QuizIndexSave);
 			}
 			else if (qs == QuizStatus.ApprovedQuiz)
 			{
@@ -135,7 +136,7 @@
 
 				allQuizzesString = $"{QUIZZES_FILE_NAME}{FILENAME_TO_DATA_SEPARATOR}{allQuizzesString}";
 
-				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
+				this.provider.Action(ref allQuizzesString, this.Id, ProviderOptions.QuizIndexSave);
 
 				//id|quizName|userName|quizFileName|QuizStatus|numOfQuestions|Likes
 			}
@@ -169,7 +170,7 @@
 
 				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 
-				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
+				this.provider.Action(ref allQuizzesString, this.Id, ProviderOptions.QuizIndexSave);
 			}
 			else if (qs == QuizStatus.UnlikeQuiz)
 			{
@@ -201,7 +202,7 @@
 
 				allQuizzesString = GlobalConstants.QUIZZES_FILE_NAME + GlobalConstants.FILENAME_SEPARATOR + allQuizzesString;
 
-				this.provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
+				this.provider.Action(ref allQuizzesString, this.Id, ProviderOptions.QuizIndexSave);
 			}
 
 			if (qs == QuizStatus.NewQuiz)
@@ -213,7 +214,7 @@
 					allQuizData += this.Questions[i].BuildQuestionData();
 				}
 
-				this.provider.Action(ref allQuizData, ProviderOptions.QuizSave);
+				this.provider.Action(ref allQuizData, this.Id, ProviderOptions.QuizSave);
 
 				this.writer.WriteLine($"Quiz {GlobalConstants.QUOTES_DATA_SEPARATOR}{this.QuizName}{GlobalConstants.QUOTES_DATA_SEPARATOR} with ID {this.Id} sent for admin approval!");
 			}
@@ -223,7 +224,7 @@
 		{
 			string s = GlobalConstants.QUIZZES_FILE_NAME;
 
-			this.provider.Action(ref s, ProviderOptions.QuizFind);
+			this.provider.Action(ref s, this.Id, ProviderOptions.QuizFind);
 
 			if (s == GlobalConstants.ERROR)
 			{

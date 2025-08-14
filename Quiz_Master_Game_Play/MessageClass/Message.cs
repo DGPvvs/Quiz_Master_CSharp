@@ -33,13 +33,13 @@
 		{
 			string messages = $"{MESSAGES_FILE_NAME}{FILENAME_SEPARATOR}{s}";
 
-			this.provider.Action(ref messages, ProviderOptions.MessagesSave);
+			this.provider.Action(ref messages, 0, ProviderOptions.MessagesSave);
 		}
 
 		public string FindAllMessages()
 		{
 			string s = MESSAGES_FILE_NAME;
-			this.provider.Action(ref s, ProviderOptions.MessagesLoad);
+			this.provider.Action(ref s, 0, ProviderOptions.MessagesLoad);
 
 			if (s == ERROR)
 			{

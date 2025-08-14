@@ -23,7 +23,7 @@
 		public override void Execute(IGame game)
 		{
 
-			game.User.SaveData();
+			game.User.SaveData(game.User.Id);
 			game.User = null!;
 
 			game.User = new User(game.Writer, game.Reader, game.Provider);

@@ -78,7 +78,7 @@
 			{
 				string allQuizzesString = $"{GlobalConstants.QUIZZES_FILE_NAME}{GlobalConstants.FILENAME_SEPARATOR}{string.Join(Environment.NewLine, newQuizzesVec)}";
 
-				game.Provider.Action(ref allQuizzesString, ProviderOptions.QuizIndexSave);
+				game.Provider.Action(ref allQuizzesString, game.User.Id, ProviderOptions.QuizIndexSave);
 
 				UserStruct us = new UserStruct();
 				us.UserName = ByUserName;
@@ -101,7 +101,7 @@
 
 				string allMessagesString = $"{GlobalConstants.MESSAGES_FILE_NAME}{GlobalConstants.FILENAME_SEPARATOR}{string.Join(Environment.NewLine, messagesVec)}";
 
-				game.Provider.Action(ref allMessagesString, ProviderOptions.MessagesSave);
+				game.Provider.Action(ref allMessagesString, game.User.Id, ProviderOptions.MessagesSave);
 			}
 			else
 			{

@@ -40,7 +40,7 @@
 			List<string> v = new List<string>();
 
 			this.SetUpUserData(us, ref v, uo);
-			this.SaveData();
+			this.SaveData(us.Id);
 		}
 
 		public Player(IWriter writer, IReader reader, IBaseProvider provider, IGame game)
@@ -118,10 +118,10 @@
 				.Last();
 		}
 
-		public override void SaveData()
+		public override void SaveData(uint id)
 		{
 			string s = this.BuildUserData();
-			this.Provider.Action(ref s, ProviderOptions.UserSave);
+			this.Provider.Action(ref s, id, ProviderOptions.UserSave);
 		}
 
 		public override string BuildUserData()
@@ -396,7 +396,7 @@
 				if (id == qiDTO.Id && qiDTO.QuizStatus == QuizStatus.ApprovedQuiz)
 				{
 					quizString = qiDTO.QuizFileName!;
-					this.Provider.Action(ref quizString, ProviderOptions.QuizLoad);
+					this.Provider.Action(ref quizString, this.Id, ProviderOptions.QuizLoad);
 					break;
 				}
 			}

@@ -58,7 +58,7 @@
 				usersVec[userIndex] = s;
 
 				string s1 = string.Join(GlobalConstants.ROW_DATA_SEPARATOR, usersVec);
-				game.Provider.Action(ref s1, ProviderOptions.NewUserSave);
+				game.Provider.Action(ref s1, game.User.Id, ProviderOptions.NewUserSave);
 			}
 		}
 	}

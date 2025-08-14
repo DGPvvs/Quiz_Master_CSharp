@@ -46,7 +46,7 @@
 		{
 		}
 
-		public void Action(ref string str, ProviderOptions options)
+		public void Action(ref string str, uint id, ProviderOptions options)
 		{
 			if (options == ProviderOptions.ConfigLoad)
 			{

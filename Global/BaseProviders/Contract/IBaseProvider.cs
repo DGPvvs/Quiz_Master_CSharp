@@ -4,6 +4,6 @@
 
 	public interface IBaseProvider
 	{
-		public void Action(ref string str, ProviderOptions options);
+		public void Action(ref string str, uint id, ProviderOptions options);
 	}
 }

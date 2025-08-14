@@ -80,7 +80,7 @@
 
 			string s1 = string.Join(Environment.NewLine, usersVec);
 
-			game.Provider.Action(ref s1, ProviderOptions.EditUser);
+			game.Provider.Action(ref s1, game.User.Id, ProviderOptions.EditUser);
 		}
 	}
 }

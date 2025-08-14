@@ -51,7 +51,7 @@
 
 				string s = sb.ToString().TrimEnd();
 
-				game.Provider.Action(ref s, ProviderOptions.QuizSave);
+				game.Provider.Action(ref s, game.User.Id, ProviderOptions.QuizSave);
 			}
 			else
 			{

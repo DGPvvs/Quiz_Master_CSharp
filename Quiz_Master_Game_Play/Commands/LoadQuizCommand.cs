@@ -53,7 +53,7 @@
 				{
 					quizString = qiDTO.QuizFileName!;
 
-					game.Provider.Action(ref quizString, ProviderOptions.QuizLoad);
+					game.Provider.Action(ref quizString, game.User.Id, ProviderOptions.QuizLoad);
 					break;
 				}
 			}

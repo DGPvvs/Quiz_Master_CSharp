@@ -90,7 +90,7 @@
 		public void SaveConfig()
 		{
 			string configString = $"{this.MaxUserId}{Environment.NewLine}{this.MaxQuizId}";
-			this.provider.Action(ref configString, ProviderOptions.ConfigSave);
+			this.provider.Action(ref configString, 0, ProviderOptions.ConfigSave);
 		}
 
 		public void LoadUser(UserStruct us)
@@ -112,7 +112,7 @@
 		private void LoadConfig()
 		{
 			string configString = string.Empty;
-			this.provider.Action(ref configString, ProviderOptions.ConfigLoad);
+			this.provider.Action(ref configString, 0, ProviderOptions.ConfigLoad);
 
 			List<string> v = configString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 			if (v.Count > 0)

@@ -39,7 +39,7 @@
 
 		void SetUpUserData(UserStruct us, ref List<string> list, UserOptions uo);
 
-		void SaveData();
+		void SaveData(uint id);
 
 		void Help();
 

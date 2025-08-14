@@ -22,6 +22,6 @@
 
 		public override string BuildUserData() => base.BuildUserData();
 
-		public override void SaveData() => base.SaveData();
+		public override void SaveData(uint id) => base.SaveData(id);
 	}
 }

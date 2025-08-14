@@ -91,7 +91,7 @@
 
 			allMessagesString = $"{GlobalConstants.MESSAGES_FILE_NAME}{GlobalConstants.FILENAME_SEPARATOR}{allMessagesString}";
 
-			game.Provider.Action(ref allMessagesString, ProviderOptions.MessagesSave);
+			game.Provider.Action(ref allMessagesString, game.User.Id, ProviderOptions.MessagesSave);
 		}
 	}
 }

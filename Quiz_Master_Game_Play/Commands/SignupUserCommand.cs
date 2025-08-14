@@ -65,7 +65,7 @@
 
 			string usersString = string.Join(Environment.NewLine, usersVec);
 
-			game.Provider.Action(ref usersString, ProviderOptions.NewUserSave);
+			game.Provider.Action(ref usersString, game.User.Id, ProviderOptions.NewUserSave);
 
 			Player newPlayer = new Player(game.Writer, game.Reader, game.Provider, us, UserOptions.NewUserCreated);
 
