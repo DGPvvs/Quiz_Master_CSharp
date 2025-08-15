@@ -73,6 +73,7 @@
 			UserDB? user = await this
 				.context.UsersDB
 				.FirstOrDefaultAsync(u => u.UserGameId == id);
+
 			if (user != null)
 			{
 				user.FirstName = userData[0];
@@ -87,12 +88,18 @@
 				user.NumberSolvedNormalQuizzes = uint.Parse(userData[9]);
 				user.NumberCreatedQuizzesChallengers = uint.Parse(userData[10]);
 
+				user.CreatedQuizzes = await context
+					.QuizzesDB
+					.Where(q => q.UserId == user.Id)
+					.ToListAsync();
+
 				int i = 11;
 				int j = i;
 
 				for (; i < j + user.NumberCreatedQuizzes; ++i)
-				{
-					this.listCreatedQuizzes!.Add(v[i]);
+				{ 
+					QuizDB quiz = context.QuizzesDB.Where(q => q..Id == uint.Parse(userData[i]))
+					 this.listCreatedQuizzes!.Add(v[i]);
 				}
 
 				j = i;
