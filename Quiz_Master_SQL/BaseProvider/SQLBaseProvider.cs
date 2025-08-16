@@ -51,6 +51,48 @@
 				Console.WriteLine(s);
 				this.UpdateUser(s, id);
 			}
+			else if (options == ProviderOptions.QuizFind)
+			{
+				string s = str;
+				str = this.LoadAllQuizzes(s);
+			}
+		}
+
+		private string LoadAllQuizzes(string s)
+		{
+			Task<IEnumerable<QuizDB>> quizzes = LoadAllQuizzesFromBase(s);
+			IEnumerable<QuizDB> quizList = quizzes.Result;
+			StringBuilder sb = new StringBuilder();
+			foreach (QuizDB quiz in quizList)
+			{
+				sb.AppendLine($"{quiz.GameId}|{quiz.QuizName}|{quiz.UserDb.UserGameId}|{quiz.GameId}|{quiz.QuizStatus}|{quiz.NumOfQuestions}|{quiz.Likes}");
+			}
+
+			return sb.ToString();
+			//1|Quiz1|UserPrime|1Quiz.txt|2|1|0
+			//id|quizName|userName|quizFileName|QuizStatus|numOfQuestions|Likes
+		}
+
+		private async Task<IEnumerable<QuizDB>> LoadAllQuizzesFromBase(string s)
+		{
+			IEnumerable<QuizDB> quizzes = await this
+				.context
+				.QuizzesDB
+				.Where(q => q.QuizStatus == QuizStatus.ApprovedQuiz)
+				.Select(q => new QuizDB
+				{
+					Id = q.Id,
+					UserId = q.UserId,
+					UserDb = q.UserDb,
+					QuizStatus = q.QuizStatus,
+					NumOfQuestions = q.NumOfQuestions,
+					Likes = q.Likes,
+					QuizName = q.QuizName,
+					GameId = q.GameId
+				})
+				.ToHashSetAsync();
+			
+			return quizzes;
 		}
 
 		private void UpdateUser(string s, uint id)
@@ -65,7 +107,6 @@
 			userData[0] = firstName[1];
 
 			Task<string> result = UpdateUserInBase(userData, id);
-			throw new NotImplementedException();
 		}
 
 		private async Task<string> UpdateUserInBase(List<string> userData, uint id)
@@ -88,73 +129,110 @@
 				user.NumberSolvedNormalQuizzes = uint.Parse(userData[9]);
 				user.NumberCreatedQuizzesChallengers = uint.Parse(userData[10]);
 
-				user.CreatedQuizzes = await context
-					.QuizzesDB
-					.Where(q => q.UserId == user.Id)
-					.ToListAsync();
+				//user.CreatedQuizzes = await context
+				//	.QuizzesDB
+				//	.Where(q => q.UserId == user.Id)
+				//	.ToListAsync();
 
 				int i = 11;
 				int j = i;
 
 				for (; i < j + user.NumberCreatedQuizzes; ++i)
 				{ 
-					QuizDB quiz = context.QuizzesDB.Where(q => q..Id == uint.Parse(userData[i]))
-					 this.listCreatedQuizzes!.Add(v[i]);
-				}
+					QuizDB? quiz = await context
+						.QuizzesDB
+						.Where(q => q.GameId == uint.Parse(userData[i]))
+						.FirstOrDefaultAsync();
 
-				j = i;
-
-				for (; i < j + this.numberLikedQuizzes; ++i)
-				{
-					this.listLikedQuizzes!.Add(uint.Parse(v[i]));
-				}
-
-				j = i;
-
-				for (; i < j + this.numberFavoriteQuizzes; ++i)
-				{
-					this.listFavoriteQuizzes!.Add(uint.Parse(v[i]));
-				}
-
-				j = i;
-
-				for (; i < j + this.numberFinishedChallenges; ++i)
-				{
-					this.listFinishedChallenges!.Add(v[i]);
-				}
-
-				List<string> quizzesVec = this.Quiz
-					.FindAllQuizzes()
-					.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-					.ToList();
-
-				for (int k = 0; k < quizzesVec.Count; k++)
-				{
-					QuizIndexDTO qiDTO = new QuizIndexDTO();
-
-					qiDTO.SetElement(quizzesVec[k]);
-
-					bool isAddedNewQuiz = !this.ContainCreatedQuizzes(qiDTO.Id)
-						&& (qiDTO.QuizStatus == QuizStatus.ApprovedQuiz)
-						&& (qiDTO.UserName == this.UserName);
-
-					if (isAddedNewQuiz)
+					if (quiz != null)
 					{
-						string createdQuiz = $"{qiDTO.Id.ToString()}{CREATED_QUIZ_SEPARATOR_STRING}{qiDTO.QuizName}";
-
-						this.listCreatedQuizzes!.Add(createdQuiz);
-						this.numberCreatedQuizzes = (uint)this.listCreatedQuizzes.Count;
-
-						this.AddQuizChallenge(ChallengerOptions.CreateChallenger);
+						user.CreatedQuizzes.Add(quiz!);
 					}
 				}
 
+				j = i;
+
+				for (; i < j + user.NumberLikedQuizzes; ++i)
+				{
+					//QuizDB? quiz = await context
+					//	.QuizzesDB
+					//	.Include(lq => lq.LikedQuizzes)
+					//	.ThenInclude(q => q.QuizDBs)
+					//	.FirstOrDefaultAsync(q => q.GameId == uint.Parse(userData[i]));
+
+					//LikedQuizzeDB? quiz = await context
+					//	.LikedQuizzesDB
+					//	.Include(lq => lq.QuizDBs)
+					//	.Where(q => q.QuizDBs.GameId == uint.Parse(userData[i]))
+					//	.FirstOrDefaultAsync();
+
+					Guid quizGameId = await context
+						.QuizzesDB
+						.Where(q => q.GameId == uint.Parse(userData[i]))
+						.Select(q => q.Id)
+						.FirstOrDefaultAsync();
+
+					LikedQuizzeDB quiz = new LikedQuizzeDB()
+					{
+						QuizId = quizGameId,
+						UserId = Guid.Parse(user.Id.ToString()!)
+					};
+
+
+
+					if (quiz != null)
+					{
+						user.LikedQuizzes.Add(quiz!);
+					}
+				}
+
+				j = i;
+
+				for (; i < j + user.NumberFavoriteQuizzes; ++i)
+				{
+					//FavoritedQuizzeDB? quiz = await context
+					//	.FavoritedQuizzes
+					//	.Include(lq => lq.Quiz)
+					//	.Where(q => q.Quiz.GameId == uint.Parse(userData[i]))
+					//	.FirstOrDefaultAsync();
+
+					Guid favoriteQuizId = await context
+							.QuizzesDB
+							.Where(q => q.GameId == uint.Parse(userData[i]))
+							.Select(q => q.Id)
+							.FirstOrDefaultAsync();
+
+					FavoritedQuizzeDB? quiz = new FavoritedQuizzeDB()
+					{
+						QuizId = favoriteQuizId,
+						UserId = Guid.Parse(user.Id.ToString()!)
+					};
+
+					if (quiz != null)
+					{
+						user.FavoritedQuizzes.Add(quiz!);
+					}
+				}
+
+				j = i;
+
+				for (; i < j + user.NumberFinishedChallenges; ++i)
+				{
+					FinishedChallengeDB? challenges = new FinishedChallengeDB()
+					{
+						ChallengeDescription = userData[i],
+						UserId = Guid.Parse(user.Id.ToString()!)
+					};
+
+					user.FinishedChallenges.Add(challenges);
+				}
 
 				this.context.UsersDB.Update(user);
 				await this.context.SaveChangesAsync();
 				return $"{user.FirstName}{Environment.NewLine}{user.LastName}";
 			}
-				throw new NotImplementedException();
+
+			return string.Empty; // Return empty string if user not found
 			/*0 <firstName>
 1 <lastName>
 2 <level>
@@ -244,8 +322,77 @@
 		{
 			Guid id = Guid.Parse(s);
 			Task<UserDTO> result = LoadUserData(id);
-			var i = result.Result;
-			return $"{result.Result.FirstName}{Environment.NewLine}{result.Result.LastName}";
+			UserDTO user = result.Result;
+			if (user.UserGameId <=10)
+			{
+				return $"{result.Result.FirstName}{Environment.NewLine}{result.Result.LastName}";
+			}
+			else
+			{
+				StringBuilder sb = new StringBuilder();
+
+				sb.AppendLine(user.FirstName); //0
+				sb.AppendLine(user.LastName); //1
+				sb.AppendLine(user.Level.ToString()); //2
+				sb.AppendLine(user.Points.ToString()); //3
+				sb.AppendLine(user.NumberCreatedQuizzes.ToString()); //4
+				sb.AppendLine(user.NumberLikedQuizzes.ToString()); //5
+				sb.AppendLine(user.NumberFavoriteQuizzes.ToString()); //6
+				sb.AppendLine(user.NumberFinishedChallenges.ToString()); //7
+				sb.AppendLine(user.NumberSolvedTestQuizzes.ToString()); //8
+				sb.AppendLine(user.NumberSolvedNormalQuizzes.ToString()); //9
+				sb.AppendLine(user.NumberCreatedQuizzesChallengers.ToString()); //10
+
+				foreach (QuizDB quiz in user.CreatedQuizzes)
+				{
+					sb.AppendLine($"{quiz.GameId}#{quiz.QuizName}");
+				}
+				foreach (LikedQuizzeDB likedQuiz in user.LikedQuizzes)
+				{
+					sb.AppendLine($"{likedQuiz.QuizId}");
+				}
+				foreach (FavoritedQuizzeDB favoritedQuiz in user.FavoritedQuizzes)
+				{
+					sb.AppendLine($"{favoritedQuiz.QuizId}");
+				}
+				foreach (FinishedChallengeDB finishedChallenge in user.FinishedChallenges)
+				{
+					sb.AppendLine(finishedChallenge.ChallengeDescription);
+				}
+				return sb.ToString();
+
+				/*0 <firstName>
+1 <lastName>
+2 <level>
+3 <points>
+4 <numberCreatedQuizzes>
+5 <numberLikedQuizzes>
+6 <numberFavoriteQuizzes>
+7 <numberFinishedChallenges>
+8 <numberSolvedTestQuizzes>
+9 <numberSolvedNormalQuizzes>
+10 <numberCreatedQuizzesChallengers>
+<numberCreatedQuizzes lines of created quizes in format>:
+<quizId>#<quizName>
+.
+.
+.
+<numberLikedQuizzes lines of liked quizzes in format>:
+<quizId>
+.
+.
+.
+<numberFavoriteQuizzes lines of favorite quizzes in format>:
+<quizId>
+.
+.
+.
+<numberFinishedChallenges lines of finished challenges in format>
+<<data>|<text challenges>>
+.
+.
+.*/
+			}
 		}
 
 		private async Task<UserDTO> LoadUserData(Guid id)
@@ -276,35 +423,107 @@
 			}
 			else
 			{
-				throw new NotImplementedException();
+				user = await this
+				.context
+				.UsersDB
+				.Where(e => e.Id == id)
+				.Select(e => new UserDTO
+				{
+					Id = Guid.Parse(e.Id.ToString()!)
+					, UserName = e.UserName!
+					, Password = e.Password
+					, UserOptions = e.UserOptions
+					, UserGameId = e.UserGameId
+					, FirstName = e.FirstName!
+					, LastName = e.LastName!
+					, Level = (uint)e.Level!
+					, Points = (uint)e.Points!
+					, NumberCreatedQuizzes = (uint)e.NumberCreatedQuizzes!
+					, NumberLikedQuizzes = (uint)e.NumberLikedQuizzes!
+					, NumberFavoriteQuizzes = (uint)e.NumberFavoriteQuizzes!
+					, NumberFinishedChallenges = (uint)e.NumberFinishedChallenges!
+					, NumberSolvedTestQuizzes = (uint)e.NumberSolvedTestQuizzes!
+					, NumberSolvedNormalQuizzes = (uint)e.NumberSolvedNormalQuizzes!
+					, NumberCreatedQuizzesChallengers = (uint)e.NumberCreatedQuizzesChallengers!
+				})
+				.FirstOrDefaultAsync();
+
+				if (user != null && user.NumberCreatedQuizzes > 0)
+				{
+					user.CreatedQuizzes = await this
+						.context
+						.QuizzesDB
+						.Where(q => q.UserId == user.Id)
+						.ToHashSetAsync();					
+				}
+
+				if (user != null && user.NumberLikedQuizzes > 0)
+				{
+					user.LikedQuizzes = await this
+						.context
+						.LikedQuizzesDB
+						.Where(lq => lq.UserId == user.Id)
+						.ToHashSetAsync();
+				}
+
+				//user.LikedQuizzes = await this
+				//		.context
+				//		.LikedQuizzesDB
+				//		.Where(lq => lq.UserId == user.Id)
+				//		.Select(lq => new LikedQuizzeDB
+				//		{
+				//			UserDBs = lq.UserDBs
+				//			, QuizId = lq.QuizId
+				//			, UserId = lq.UserId
+				//			, QuizDBs = lq.QuizDBs
+				//		})
+				//		.ToListAsync();
+
+				if (user != null && user.NumberFavoriteQuizzes > 0)
+				{
+					user.FavoritedQuizzes = await this
+						.context
+						.FavoritedQuizzes
+						.Where(lq => lq.UserId == user.Id)
+						.ToHashSetAsync();
+				}
+
+				//user.FavoritedQuizzes = await this
+				//	.context
+				//	.FavoritedQuizzes
+				//	.Where(fq => fq.UserId == user.Id)
+				//	.Select(fq => new FavoritedQuizzeDB
+				//	{
+				//		User = fq.User
+				//		, QuizId = fq.QuizId
+				//		, UserId = fq.UserId
+				//		, Quiz = fq.Quiz
+				//	})
+				//	.ToListAsync();
+
+				if (user != null && user.NumberFinishedChallenges > 0)
+				{
+					user.FinishedChallenges = await this
+						.context
+						.FinishedChallengesDB
+						.Where(fc => fc.UserId == user.Id)
+						.Select(fc => new FinishedChallengeDB
+						{
+							UserDBs = fc.UserDBs
+							,
+							ChallengeDescription = fc.ChallengeDescription
+						})
+						.ToHashSetAsync();
+				}
+
+				//user.FinishedChallenges = await this
+				//	.context
+				//	.FinishedChallengesDB
+				//	.Where(fc => fc.UserId == user.Id)
+				//	.ToListAsync();
 			}
 
-				//var user = await this
-				//.context
-				//.UsersDB
-				//.Where(e => e.Id == id)
-				//.Select(e => new UserDTO
-				//{
-				//	Id = Guid.Parse(e.Id.ToString()!)
-				//	, UserName = e.UserName!
-				//	, Password = e.Password
-				//	, UserOptions = e.UserOptions
-				//	, UserGameId = e.UserGameId
-				//	, FirstName = e.FirstName!
-				//	, LastName = e.LastName!
-				//	, Level = e.Level
-				//	, Points = e.Points
-				//	, NumberCreatedQuizzes = e.NumberCreatedQuizzes
-				//	, NumberLikedQuizzes = e.NumberLikedQuizzes
-				//	, NumberFavoriteQuizzes = e.NumberFavoriteQuizzes
-				//	, NumberFinishedChallenges = e.NumberFinishedChallenges
-				//	, NumberSolvedTestQuizzes = e.NumberSolvedTestQuizzes
-				//	, NumberSolvedNormalQuizzes = e.NumberSolvedNormalQuizzes
-				//	, NumberCreatedQuizzesChallengers = e.NumberCreatedQuizzesChallengers
-				//})
-				//.FirstOrDefaultAsync();
-
-				return user ?? throw new InvalidOperationException("User not found or invalid UserGameId.");
+			return user ?? throw new InvalidOperationException("User not found or invalid UserGameId.");
 		}
 
 		private string FindUser(string s)

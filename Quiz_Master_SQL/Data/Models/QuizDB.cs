@@ -17,7 +17,9 @@
 		}
 
 		[Key]
-		public Guid Id { get; set; }		
+		public Guid Id { get; set; }
+
+		public uint GameId { get; set; }
 
 		public QuizStatus QuizStatus { get; set; } 
 

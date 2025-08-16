@@ -245,7 +245,7 @@
 			else
 			{
 				string s = us.FileName!;
-				this.provider.Action(ref s, this.Id, ProviderOptions.UserLoad);
+				this.provider.Action(ref s, us.Id, ProviderOptions.UserLoad);
 
 				v = s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
 

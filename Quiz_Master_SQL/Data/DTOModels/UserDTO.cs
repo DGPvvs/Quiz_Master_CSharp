@@ -5,6 +5,14 @@
 
 	public class UserDTO
 	{
+		public UserDTO()
+		{
+			this.FinishedChallenges = new HashSet<FinishedChallengeDB>();
+			this.CreatedQuizzes = new HashSet<QuizDB>();
+			this.LikedQuizzes = new HashSet<LikedQuizzeDB>();
+			this.FavoritedQuizzes = new HashSet<FavoritedQuizzeDB>();
+			this.Messages = new HashSet<MessagesDB>();
+		}
 		public Guid Id { get; set; }
 
 		public string UserName { get; set; } = null!;
