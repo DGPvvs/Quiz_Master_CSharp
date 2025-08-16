@@ -4,7 +4,6 @@
 	using Common.Constants;
 	using Common.Enums;
 	using Microsoft.EntityFrameworkCore;
-	using Quiz_Master_Game_Play.QuizClass;
 	using Quiz_Master_SQL.Data.DTOModels;
 	using Quiz_Master_SQL.Data.Models;
 	using Quiz_Master_SQL.Quiz_Master_SQL.Data;
@@ -48,7 +47,7 @@
 			else if (options == ProviderOptions.UserSave)
 			{
 				string s = str;
-				Console.WriteLine(s);
+				//Console.WriteLine(s);
 				this.UpdateUser(s, id);
 			}
 			else if (options == ProviderOptions.QuizFind)
@@ -295,7 +294,7 @@
 
 			Task<UserDB> result = AddNewUserToBase(userData);
 
-			string newUserId = result.Result.Id.ToString();
+			string newUserId = result.Result.Id.ToString()!;
 
 			return newUserId; // Return the new user ID
 		}
