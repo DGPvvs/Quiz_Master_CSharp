@@ -38,7 +38,47 @@
 			}
 			else if (options == ProviderOptions.NewUserSave)
 			{
-				str = this.AddNewUser(str);
+
+				if (id != 0)
+				{
+					List<string> usersList = str
+						.Split(GlobalConstants.ROW_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+						.ToList();
+
+					foreach (string userList in usersList)
+					{
+						List<string> userData = userList
+							.Split(GlobalConstants.ELEMENT_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+							.ToList();
+
+						if (uint.Parse(userData[3]) > 10)
+						{
+							Guid userId = Guid.Parse(userData[2]);
+							Task<UserDTO> userDTO = LoadUserData(userId);
+
+							UserDTO user = userDTO.Result;
+
+							bool isChange = (user.UserName == userData[0])
+								&& (user.Password == uint.Parse(userData[1]))
+								&& (user.UserOptions == (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]));
+
+							if (!isChange)
+							{
+								user.UserOptions = (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]);
+								user.Password = uint.Parse(userData[1]);
+								user.UserName = userData[0];
+
+							}
+
+						}
+
+					}
+
+				}
+				else
+				{
+					str = this.AddNewUser(str);
+				}
 			}
 			else if (options == ProviderOptions.ConfigSave)
 			{				
