@@ -4,9 +4,11 @@
 	using Common.Constants;
 	using Common.Enums;
 	using Microsoft.EntityFrameworkCore;
+	using Quiz_Master_Game_Play.QuizClass;
 	using Quiz_Master_SQL.Data.DTOModels;
 	using Quiz_Master_SQL.Data.Models;
 	using Quiz_Master_SQL.Quiz_Master_SQL.Data;
+	using System.Collections.Generic;
 	using System.Text;
 	using System.Threading.Tasks;
 
@@ -53,27 +55,12 @@
 
 						if (uint.Parse(userData[3]) > 10)
 						{
-							Guid userId = Guid.Parse(userData[2]);
-							Task<UserDTO> userDTO = LoadUserData(userId);
-
-							UserDTO user = userDTO.Result;
-
-							bool isChange = (user.UserName == userData[0])
-								&& (user.Password == uint.Parse(userData[1]))
-								&& (user.UserOptions == (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]));
-
-							if (!isChange)
+							if (this.UpdateUser(userData))
 							{
-								user.UserOptions = (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]);
-								user.Password = uint.Parse(userData[1]);
-								user.UserName = userData[0];
-
+								break;
 							}
-
 						}
-
 					}
-
 				}
 				else
 				{
@@ -95,6 +82,54 @@
 				string s = str;
 				str = this.LoadAllQuizzes(s);
 			}
+			else if (options == ProviderOptions.QuizIndexSave)
+			{
+				string s = str;
+				//quizzes.txt$1 | First Quiz | UserPrime | 1Quiz.txt | NewQuiz | 1 | 0
+				this.SaveQuizIndex(s);
+			}
+		}
+
+		private void SaveQuizIndex(string s)
+		{
+			bool isFirst = true;
+			var quizzesAndFilename = s
+				.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.ToArray();
+			var quizzes = quizzesAndFilename[1]
+				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+				.ToList();
+
+			throw new NotImplementedException();
+		}
+
+		private bool UpdateUser(List<string> userData)
+		{		
+			Task<bool> userDTO = ChangeUserData(userData);
+
+			bool isChange = userDTO.Result;			
+
+			return isChange;
+		}
+
+		private async Task<bool> ChangeUserData(List<string> userData)
+		{
+			bool result = false;
+
+			UserDB? user = await this
+				.context
+				.UsersDB
+				.FirstOrDefaultAsync(u => u.UserName == userData[0]);
+
+			if (user != null && user.UserOptions != (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]))
+			{
+				user.UserOptions = (UserOptions)Enum.Parse(typeof(UserOptions), userData[4]);
+				result = true;
+				this.context.UsersDB.Update(user);
+				await this.context.SaveChangesAsync();
+			}
+
+			return result;				
 		}
 
 		private string LoadAllQuizzes(string s)
