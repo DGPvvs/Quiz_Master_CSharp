@@ -86,21 +86,90 @@
 			{
 				string s = str;
 				//quizzes.txt$1 | First Quiz | UserPrime | 1Quiz.txt | NewQuiz | 1 | 0
-				this.SaveQuizIndex(s);
+				str = this.SaveQuizIndex(s, id);
+			}
+			else if (options == ProviderOptions.QuizSave)
+			{
+				string s = str;
+				str = this.SaveQuiz(s, id);
 			}
 		}
 
-		private void SaveQuizIndex(string s)
+		private string SaveQuiz(string s, uint id)
 		{
-			bool isFirst = true;
-			var quizzesAndFilename = s
+			string result = string.Empty;
+			string[] quizzesAndFilename = s
 				.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
 				.ToArray();
-			var quizzes = quizzesAndFilename[1]
+			List<string> quizzes = quizzesAndFilename[1]
 				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
 				.ToList();
 
-			throw new NotImplementedException();
+			foreach (string quiz in quizzes)
+			{
+				QuizIndexDTO quizIndexDTO = new QuizIndexDTO();
+				quizIndexDTO.SetElement(quiz);
+				if (quizIndexDTO.Id == id)
+				{
+					Console.WriteLine(id);
+					//Task<string> resultAsync = this.UpdateQuizIndexAsync(quizIndexDTO);
+					//result = resultAsync.Result;
+
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		private string SaveQuizIndex(string s, uint id)
+		{
+			string result = string.Empty;
+			string[] quizzesAndFilename = s
+				.Split(GlobalConstants.FILENAME_TO_DATA_SEPARATOR, StringSplitOptions.RemoveEmptyEntries)
+				.ToArray();
+			List<string> quizzes = quizzesAndFilename[1]
+				.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+				.ToList();
+
+			foreach (string quiz in quizzes)
+			{				
+				QuizIndexDTO quizIndexDTO = new QuizIndexDTO();
+				quizIndexDTO.SetElement(quiz);
+				if (quizIndexDTO.Id == id)
+				{
+					Task<string> resultAsync = this.UpdateQuizIndexAsync(quizIndexDTO);
+					result = resultAsync.Result;
+
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		private async Task<string> UpdateQuizIndexAsync(QuizIndexDTO quizIndexDTO)
+		{
+			QuizDB quiz = new QuizDB
+			{
+				GameId = quizIndexDTO.Id,
+				QuizName = quizIndexDTO.QuizName!,
+				QuizStatus = quizIndexDTO.QuizStatus,
+				NumOfQuestions = quizIndexDTO.NumOfQuestions,
+				Likes = quizIndexDTO.Likes
+			};
+
+			quiz.UserDb = await this
+				.context
+				.UsersDB
+				.FirstOrDefaultAsync(u => u.UserName == quizIndexDTO.UserName) ?? null!;
+
+			quiz.UserId = (Guid)quiz.UserDb?.Id!;
+
+			await this.context.QuizzesDB.AddAsync(quiz);
+			await this.context.SaveChangesAsync();
+
+			return quiz.Id.ToString()!;
 		}
 
 		private bool UpdateUser(List<string> userData)

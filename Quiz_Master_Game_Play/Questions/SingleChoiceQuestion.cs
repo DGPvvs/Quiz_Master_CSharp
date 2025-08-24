@@ -10,9 +10,10 @@
 		private List<string>? questions;
 
 		public SingleChoiceQuestion(IWriter writer, IReader reader, string description, string correctAnswer, uint points, bool isTest)
-			: base(writer, reader, description, correctAnswer, points, isTest, 4)
+			: this(writer, reader, description, correctAnswer, points, isTest, 4)
 		{
-			this.Qt = QuestionType.SC;
+			//this.Qt = QuestionType.SC;
+			//this.questions = new List<string>();
 		}
 
 		public SingleChoiceQuestion(IWriter writer, IReader reader, string description, string correctAnswer, uint points, bool isTest, byte questionsCount)
